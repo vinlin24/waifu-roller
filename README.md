@@ -1,0 +1,1 @@
+Suppose you're in your code flow, but it's a new hour and you can roll for Mudae waifus again. Now you can start the whole rolling sequence right from your command line. This project uses (PyAutoGUI)[https://pypi.org/project/PyAutoGUI/] to automatically switch to Discord, search for your channel of choice, and start rolling. No asking for user tokens, no Discord self-botting.
