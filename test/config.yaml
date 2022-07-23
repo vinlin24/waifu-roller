@@ -1,0 +1,9 @@
+---
+# Values to use when command line arguments are omitted
+defaults:
+  # Name of command (no $ or / prefix)
+  mudae-command:
+  # Channel to search for
+  target-channel:
+  # Number of times to send the command
+  num-rolls:
