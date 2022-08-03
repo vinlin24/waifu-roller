@@ -5,8 +5,38 @@ parser.py
 Implements the command line parser for this program.
 """
 
-import sys
 from argparse import ArgumentParser
+from typing import Any
+
+from exceptions import ConfigFormatError
+
+
+def _validate_config(config: dict) -> None:
+    # unpack default choices from config
+    try:
+        command = config["mudae-command"]
+        channel = config["target-channel"]
+        num_rolls = config["num-rolls"]
+    except KeyError as e:
+        raise ConfigFormatError(
+            f"Missing option {e.args[0]!r} in configuration file"
+        ) from None
+
+    # validate format: command should not be prefixed
+    if not isinstance(command, str) or command.startswith(("$", "/")):
+        raise ConfigFormatError(
+            f"{command!r} is a bad value for option 'mudae-command': should be a string and not command-prefixed (e.g. 'wa')"
+        )
+    # validate format: channel name shouldn't have spaces in it
+    if not isinstance(channel, str) or any(char.isspace() for char in channel):
+        raise ConfigFormatError(
+            f"{channel!r} is a bad value for option 'target-channel': should be a string and not contain any whitespace (e.g. waifu-spam)"
+        )
+    # validate format: num_rolls should be non-negative
+    if not isinstance(num_rolls, int) or num_rolls < 0:
+        raise ConfigFormatError(
+            f"{num_rolls!r} is a bad value for option 'num-rolls': should be a non-negative integer"
+        )
 
 
 class Parser(ArgumentParser):
@@ -26,12 +56,12 @@ class Parser(ArgumentParser):
         """
         super().__init__(description="Roll waifus on Discord")
 
-        # unpack default choices from config
-        command: str = defaults.get("mudae-command")
-        channel: str = defaults.get("target-channel")
-        num_rolls: int = defaults.get("num-rolls")
+        _validate_config(defaults)
 
-        self.add_argument("command", nargs="?", default=command)
-        self.add_argument("-c", "--channel", default=channel)
-        self.add_argument("-n", "--num", type=int, default=num_rolls)
+        self.add_argument("command", nargs="?",
+                          default=defaults["mudae-command"])
+        self.add_argument("-c", "--channel",
+                          default=defaults["target-channel"])
+        self.add_argument("-n", "--num", type=int,
+                          default=defaults["num-rolls"])
         self.add_argument("-d", "--daily", action="store_true")
