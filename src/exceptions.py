@@ -13,3 +13,17 @@ class ConfigFileError(ConfigError):
 class ConfigFormatError(ConfigError):
     """Error in parsing the configuration file."""
     pass
+
+
+class DiscordStartupError(Exception):
+    """Error for starting the Discord app."""
+
+
+class OSNotSupportedError(Exception):
+    """Error from running application on unsupported OS."""
+    pass
+
+
+class DiscordNotFoundError(Exception):
+    """Error for when the Discord.exe cannot be located."""
+    pass

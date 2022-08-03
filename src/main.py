@@ -8,6 +8,7 @@ Entry point and main process.
 """
 
 import sys
+from argparse import Namespace
 from parser import Parser
 
 import yaml
@@ -30,10 +31,15 @@ def load_yaml(config_path: str) -> dict[str, dict[str, str | int]]:
             f"Missing option {e.args[0]!r} in configuration file")
 
 
+def run(ns: Namespace) -> None:
+    pass
+
+
 def main() -> None:
     """Main driver function."""
-    config = load_yaml(CONFIG_PATH)
-    ns = Parser(config["defaults"]).parse_args(sys.argv[1:])
+    config = load_yaml(CONFIG_PATH)  # load config
+    parser = Parser(config["defaults"])  # load defaults
+    ns = parser.parse_args(sys.argv[1:])  # parse args
     # run the program
 
 
