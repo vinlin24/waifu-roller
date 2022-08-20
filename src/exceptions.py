@@ -15,15 +15,21 @@ class ConfigFormatError(ConfigError):
     pass
 
 
-class DiscordStartupError(Exception):
-    """Error for starting the Discord app."""
-
-
 class OSNotSupportedError(Exception):
     """Error from running application on unsupported OS."""
     pass
 
 
-class DiscordNotFoundError(Exception):
+class DiscordStartupError(Exception):
+    """Error for starting the Discord app."""
+    pass
+
+
+class DiscordNotFoundError(DiscordStartupError):
     """Error for when the Discord.exe cannot be located."""
+    pass
+
+
+class DiscordNotOpenError(DiscordStartupError):
+    """Error for when the Discord app is not open when it should be."""
     pass

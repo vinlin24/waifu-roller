@@ -13,6 +13,7 @@ from argparse import Namespace
 from parser import Parser
 
 import pyautogui
+import rich.traceback
 import yaml
 
 from exceptions import ConfigFileError, ConfigFormatError
@@ -69,6 +70,9 @@ def run(ns: Namespace) -> None:
 
 def main() -> None:
     """Main driver function."""
+    # For pretty exception printing
+    rich.traceback.install()
+
     config = load_yaml(CONFIG_PATH)  # load config
     parser = Parser(config["defaults"])  # load defaults
     ns = parser.parse_args(sys.argv[1:])  # parse args
