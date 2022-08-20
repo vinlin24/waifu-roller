@@ -36,7 +36,8 @@ def load_yaml(config_path: str) -> dict[str, dict[str, str | int]]:
         raise ConfigFileError(str(e)) from None
     except KeyError as e:
         raise ConfigFormatError(
-            f"Missing option {e.args[0]!r} in configuration file")
+            f"Missing defaults option {e.args[0]!r} in configuration file"
+        ) from None
 
 
 def cooldown() -> None:
