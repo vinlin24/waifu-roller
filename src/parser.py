@@ -9,45 +9,48 @@ from argparse import ArgumentParser
 
 from exceptions import ConfigFormatError
 
+DefaultsDict = dict[str, str | int]
 
-def _validate_config(config: dict) -> None:
-    """Raise an error if config dict is not formatted properly.
+
+def _validate_config(defaults: DefaultsDict) -> None:
+    """Raise an error if default options are not properly formatted.
 
     Args:
-        config (dict): Config dict to validate.
+        defaults (DefaultsDict): Dict of default values to validate.
 
     Raises:
         ConfigFormatError: If there is any problem in the format of the
-        config dict, including missing keys, incorrect data types, bad
-        argument range or characters, etc.
+        defaults dict, including missing keys, incorrect data types,
+        bad argument range or characters, etc.
     """
     # Unpack default choices from config
     try:
-        command = config["mudae-command"]
-        channel = config["target-channel"]
-        num_rolls = config["num-rolls"]
+        command = defaults["mudae-command"]
+        channel = defaults["target-channel"]
+        num_rolls = defaults["num-rolls"]
     except KeyError as e:
         raise ConfigFormatError(
-            f"Missing option {e.args[0]!r} in configuration file"
+            f"Missing defaults option {e.args[0]!r} in configuration file"
         ) from None
 
     # Validate format: command should not be prefixed
     if not isinstance(command, str) or command.startswith(("$", "/")):
         raise ConfigFormatError(
-            f"{command!r} is a bad value for option 'mudae-command': "
-            f"should be a string and not command-prefixed (e.g. 'wa')"
+            f"{command!r} is a bad value for defaults option "
+            "'mudae-command' should be a string and not command-prefixed "
+            "(e.g. 'wa')"
         )
     # Validate format: channel name shouldn't have spaces in it
     if not isinstance(channel, str) or any(c.isspace() for c in channel):
         raise ConfigFormatError(
-            f"{channel!r} is a bad value for option 'target-channel': "
-            f"should be a string and not contain any whitespace "
-            "(e.g. waifu-spam)"
+            f"{channel!r} is a bad value for defaults option "
+            "'target-channel': should be a string and not contain any "
+            "whitespace (e.g. waifu-spam)"
         )
     # Validate format: num_rolls should be non-negative
     if not isinstance(num_rolls, int) or num_rolls < 0:
         raise ConfigFormatError(
-            f"{num_rolls!r} is a bad value for option 'num-rolls': "
+            f"{num_rolls!r} is a bad value for defaults option 'num-rolls': "
             "should be a non-negative integer"
         )
 
@@ -63,11 +66,11 @@ class Parser(ArgumentParser):
     by searching "digimon-waifus".
     """
 
-    def __init__(self, defaults: dict[str, str | int]) -> None:
+    def __init__(self, defaults: DefaultsDict) -> None:
         """Initialize the parser for this program.
 
         Args:
-            defaults (dict[str, str | int]): Default choices for
+            defaults (DefaultsDict): Default choices for
             command string, target channel, number of rolls from config
             file.
 

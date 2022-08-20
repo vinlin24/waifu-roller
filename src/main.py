@@ -8,26 +8,35 @@ Entry point and main process.
 """
 
 import sys
-import time
 from argparse import Namespace
 from parser import Parser
 
-import pyautogui
 import rich.traceback
 import yaml
 
 from exceptions import ConfigFileError, ConfigFormatError
+from keystrokes import navigate_to_channel, start_rolling
 from open import open_discord
 
 CONFIG_PATH = "config.yaml"  # make configurable later
-
-# make configurable later
-ACTION_COOLDOWN = 0.1  # seconds to wait between actions
-TYPING_COOLDOWN = 0.05  # seconds to wait between character input
-ROLLING_COOLDOWN = 1.0  # seconds to wait between waifu roll attempts
+ConfigDict = dict[str, dict[str, str | int]]  # may change later
 
 
-def load_yaml(config_path: str) -> dict[str, dict[str, str | int]]:
+def load_yaml(config_path: str) -> ConfigDict:
+    """Load configuration options from YAML file.
+
+    Args:
+        config_path (str): Path to configuration file.
+
+    Raises:
+        ConfigFileError: There was an issue loading the file specified
+        by config_path.
+        ConfigFormatError: There was a formatting error in the content
+        of the configuration file.
+
+    Returns:
+        ConfigDict: The loaded configuration details.
+    """
     try:
         with open(config_path, "rt") as fp:
             config = yaml.safe_load(fp)
@@ -41,22 +50,6 @@ def load_yaml(config_path: str) -> dict[str, dict[str, str | int]]:
         ) from None
 
 
-def cooldown() -> None:
-    time.sleep(ACTION_COOLDOWN)
-
-
-def navigate_to_channel(channel: str) -> None:
-    """Navigate to the target channel within Discord to roll in."""
-    # bring up global search > enter channel name > focus text area
-    cooldown()
-    pyautogui.hotkey("ctrl", "t")
-    cooldown()
-    pyautogui.typewrite(channel + "\n", interval=TYPING_COOLDOWN)
-    cooldown()
-    # https://pyautogui.readthedocs.io/en/latest/keyboard.html#keyboard-keys
-    pyautogui.hotkey("esc")
-
-
 def run(ns: Namespace) -> None:
     # unpack command line args
     command = ns.command
@@ -65,18 +58,24 @@ def run(ns: Namespace) -> None:
     daily = ns.daily
 
     open_discord()
-    # navigate_to_channel(channel)
+    navigate_to_channel(channel)
+    start_rolling(command, num, daily)
 
 
 def main() -> None:
     """Main driver function."""
-    # For pretty exception printing
+    # Set up global traceback handler for pretty exception printing
     rich.traceback.install()
 
-    config = load_yaml(CONFIG_PATH)  # load config
-    parser = Parser(config["defaults"])  # load defaults
-    ns = parser.parse_args(sys.argv[1:])  # parse args
-    run(ns)  # main process
+    # Load config
+    config = load_yaml(CONFIG_PATH)
+
+    # Parse command line arguments
+    parser = Parser(config["defaults"])
+    ns = parser.parse_args(sys.argv[1:])
+
+    # Run the main process
+    run(ns)
 
 
 if __name__ == "__main__":
