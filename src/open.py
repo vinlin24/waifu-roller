@@ -8,8 +8,14 @@ Responsible for starting/opening the Discord desktop app/webpage.
 import os
 import pathlib
 import platform
+import time
+
+import pyautogui
 
 from exceptions import DiscordNotFoundError, OSNotSupportedError
+
+# make configurable later?
+LOAD_WAITING = 5.0  # seconds to wait before continuing if starting app
 
 
 def _get_exe_path() -> pathlib.Path:
@@ -37,6 +43,19 @@ def _get_exe_path() -> pathlib.Path:
     return exe_path
 
 
+def _start_discord() -> None:
+    """Start the Discord desktop application and wait for a delay."""
+    exe_path = _get_exe_path()
+    os.startfile(exe_path)
+    time.sleep(LOAD_WAITING)
+
+
+def _move_to_discord(win: pyautogui.Window) -> None:
+    """Move to the Discord desktop application window."""
+    win.maximize()
+    win.activate()
+
+
 # function to call in main process
 def open_discord() -> None:
     """Open or move to the Discord desktop application.
@@ -49,5 +68,8 @@ def open_discord() -> None:
     if platform.system() != "Windows":
         raise OSNotSupportedError(
             "Application only supports Windows at the moment")
-    exe_path = _get_exe_path()
-    os.startfile(exe_path)
+
+    # if _is_discord_running():
+    #     _move_to_discord()
+    # else:
+    #     _start_discord()

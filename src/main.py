@@ -8,14 +8,22 @@ Entry point and main process.
 """
 
 import sys
+import time
 from argparse import Namespace
 from parser import Parser
 
+import pyautogui
 import yaml
 
 from exceptions import ConfigFileError, ConfigFormatError
+from open import open_discord
 
 CONFIG_PATH = "config.yaml"  # make configurable later
+
+# make configurable later
+ACTION_COOLDOWN = 0.1  # seconds to wait between actions
+TYPING_COOLDOWN = 0.05  # seconds to wait between character input
+ROLLING_COOLDOWN = 1.0  # seconds to wait between waifu roll attempts
 
 
 def load_yaml(config_path: str) -> dict[str, dict[str, str | int]]:
@@ -31,8 +39,31 @@ def load_yaml(config_path: str) -> dict[str, dict[str, str | int]]:
             f"Missing option {e.args[0]!r} in configuration file")
 
 
+def cooldown() -> None:
+    time.sleep(ACTION_COOLDOWN)
+
+
+def navigate_to_channel(channel: str) -> None:
+    """Navigate to the target channel within Discord to roll in."""
+    # bring up global search > enter channel name > focus text area
+    cooldown()
+    pyautogui.hotkey("ctrl", "t")
+    cooldown()
+    pyautogui.typewrite(channel + "\n", interval=TYPING_COOLDOWN)
+    cooldown()
+    # https://pyautogui.readthedocs.io/en/latest/keyboard.html#keyboard-keys
+    pyautogui.hotkey("esc")
+
+
 def run(ns: Namespace) -> None:
-    pass
+    # unpack command line args
+    command = ns.command
+    channel = ns.channel
+    num = ns.num
+    daily = ns.daily
+
+    open_discord()
+    # navigate_to_channel(channel)
 
 
 def main() -> None:
@@ -40,7 +71,7 @@ def main() -> None:
     config = load_yaml(CONFIG_PATH)  # load config
     parser = Parser(config["defaults"])  # load defaults
     ns = parser.parse_args(sys.argv[1:])  # parse args
-    # run the program
+    run(ns)  # main process
 
 
 if __name__ == "__main__":
