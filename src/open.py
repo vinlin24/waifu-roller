@@ -61,7 +61,8 @@ def open_discord() -> None:
     """Open or move to the Discord desktop application.
 
     Raises:
-        OSNotSupportedError: If the application is not running on Windows (WIP).
+        OSNotSupportedError: If the application is not running on
+        Windows (work-in-progress).
         DiscordNotFoundError: Could not locate Discord.exe.
     """
     # get windows working first, then worry about cross-platform lol
