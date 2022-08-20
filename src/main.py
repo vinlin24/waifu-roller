@@ -11,11 +11,13 @@ import sys
 from argparse import Namespace
 from parser import Parser
 
+import keyboard
+import rich
 import rich.traceback
 import yaml
 
 from exceptions import ConfigFileError, ConfigFormatError
-from keystrokes import navigate_to_channel, start_rolling
+from keystrokes import navigate_to_channel, start_rolling, wait_for_ready
 from open import open_discord
 
 CONFIG_PATH = "config.yaml"  # make configurable later
@@ -50,14 +52,30 @@ def load_yaml(config_path: str) -> ConfigDict:
         ) from None
 
 
+def abort_callback(event: keyboard.KeyboardEvent) -> None:
+    # todo
+    pass
+
+
 def run(ns: Namespace) -> None:
-    # unpack command line args
+    # Unpack command line args
     command = ns.command
     channel = ns.channel
     num = ns.num
     daily = ns.daily
 
-    open_discord()
+    rich.print("[bold yellow]Abort at any time with Ctrl+C[/]")
+
+    # todo: Make this process more intuitive - leave space at the start
+    # to give instructions - maybe prompt <ENTER> in either case before
+    # moving away from the terminal to Discord
+    # Wait for <ENTER> key from user if had to start app
+    launched_app = open_discord()
+    if launched_app:
+        wait_for_ready()
+
+    # Keystroke sequences
+    # todo: Make failsafe more graceful
     navigate_to_channel(channel)
     start_rolling(command, num, daily)
 

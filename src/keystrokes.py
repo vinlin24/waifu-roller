@@ -7,6 +7,7 @@ The bulk of the pyautogui calls.
 
 import time
 
+import keyboard
 import pyautogui
 import rich
 
@@ -16,6 +17,16 @@ import rich
 ACTION_COOLDOWN = 0.1  # seconds to wait between actions
 TYPING_COOLDOWN = 0.05  # seconds to wait between character input
 ROLLING_COOLDOWN = 1.0  # seconds to wait between waifu roll attempts
+
+
+def wait_for_ready() -> None:
+    """Block until the ENTER key is pressed."""
+    rich.print(
+        "[bold yellow]Hit <ENTER> when application is finished loading "
+        "to start the keystroke sequences[/]"
+    )
+    # todo: Make KeyboardInterrupt more graceful
+    keyboard.wait("enter")
 
 
 def navigate_to_channel(channel: str) -> None:
@@ -29,13 +40,34 @@ def navigate_to_channel(channel: str) -> None:
         query string to submit to the Discord search bar to locate the
         channel to roll in.
     """
-    # Bring up global search > enter channel name > focus text area
-    time.sleep(ACTION_COOLDOWN)
-    pyautogui.hotkey("ctrl", "t")
-    time.sleep(ACTION_COOLDOWN)
-    pyautogui.typewrite(channel + "\n", interval=TYPING_COOLDOWN)
-    time.sleep(ACTION_COOLDOWN)
+    # In case user put the # in there themselves
+    search = "#" + channel.removeprefix("#")
+    rich.print(
+        "[bright_black]Navigating by searching for channel with query "
+        f"{search!r}...[/]"
+    )
+
+    # In case search bar was already up for some reason
     pyautogui.hotkey("esc")
+    time.sleep(ACTION_COOLDOWN)
+
+    # Bring up quick switcher
+    pyautogui.hotkey("ctrl", "k")
+    time.sleep(ACTION_COOLDOWN)
+
+    # Input search and enter
+    # Note: sometimes this opens the stupid Quick Switcher help webpage
+    # and I don't know why
+    pyautogui.typewrite(search + "\n", interval=TYPING_COOLDOWN)
+    time.sleep(ACTION_COOLDOWN)
+
+    # Focus text area
+    pyautogui.hotkey("esc")
+    time.sleep(ACTION_COOLDOWN)
+    rich.print(
+        "[bright_black]Finished navigating, focused text area, and ready to "
+        "roll[/]"
+    )
 
 
 def start_rolling(command: str, num: int, daily: bool) -> None:

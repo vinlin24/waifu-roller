@@ -8,6 +8,7 @@ Responsible for starting/opening the Discord desktop application.
 import os
 import pathlib
 import platform
+import subprocess
 
 import pyautogui
 import rich
@@ -55,7 +56,11 @@ def _start_discord() -> None:
     """Start the Discord desktop application."""
     exe_path = _get_exe_path()
     rich.print("[bright_black]Starting Discord executable...[/]")
-    os.startfile(exe_path)
+    subprocess.Popen(
+        args=[exe_path],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL
+    )
     rich.print("[bright_black]Launched Discord desktop application[/]")
 
 
