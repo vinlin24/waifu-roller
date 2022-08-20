@@ -1,5 +1,8 @@
+# Python
 __pycache__/
 *.py[cod]
-*.code-workspace
+.venv/
 
-test/
+# Development
+temp/
+*.code-workspace
