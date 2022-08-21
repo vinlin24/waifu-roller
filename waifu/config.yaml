@@ -2,8 +2,8 @@
 # Values to use when command line arguments are omitted
 defaults:
   # Name of command (no $ or / prefix)
-  mudae-command: wa
+  mudae-command:
   # Channel to search for
-  target-channel: digimon-waifus
+  target-channel:
   # Number of times to send the command
-  num-rolls: 16
+  num-rolls:

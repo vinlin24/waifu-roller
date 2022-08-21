@@ -37,7 +37,7 @@ def _validate_config(defaults: DefaultsDict) -> None:
     if not isinstance(command, str) or command.startswith(("$", "/")):
         raise ConfigFormatError(
             f"{command!r} is a bad value for defaults option "
-            "'mudae-command' should be a string and not command-prefixed "
+            "'mudae-command': should be a string and not command-prefixed "
             "(e.g. 'wa')"
         )
     # Validate format: channel name shouldn't have spaces in it
