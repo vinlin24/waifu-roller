@@ -7,7 +7,7 @@ Implements the command line parser for this program.
 
 from argparse import ArgumentParser
 
-from exceptions import ConfigFormatError
+from waifu.exceptions import ConfigFormatError
 
 DefaultsDict = dict[str, str | int]
 

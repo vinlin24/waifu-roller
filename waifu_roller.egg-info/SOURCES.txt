@@ -1,0 +1,15 @@
+README.md
+setup.cfg
+setup.py
+waifu/__init__.py
+waifu/abort.py
+waifu/core.py
+waifu/exceptions.py
+waifu/main.py
+waifu/parser.py
+waifu_roller.egg-info/PKG-INFO
+waifu_roller.egg-info/SOURCES.txt
+waifu_roller.egg-info/dependency_links.txt
+waifu_roller.egg-info/entry_points.txt
+waifu_roller.egg-info/requires.txt
+waifu_roller.egg-info/top_level.txt

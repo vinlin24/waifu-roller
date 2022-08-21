@@ -8,18 +8,18 @@ Entry point and main process.
 """
 
 import sys
-from parser import Parser
 
 import keyboard
 import rich
 import rich.traceback
 import yaml
 
-from abort import register_abort_handlers
-from core import navigate_to_channel, open_discord, start_rolling
-from exceptions import ConfigFileError, ConfigFormatError
+from waifu.abort import register_abort_handlers
+from waifu.core import navigate_to_channel, open_discord, start_rolling
+from waifu.exceptions import ConfigFileError, ConfigFormatError
+from waifu.parser import Parser
 
-CONFIG_PATH = "config.yaml"  # make configurable later
+CONFIG_PATH = "waifu/config.yaml"  # make configurable later
 ConfigDict = dict[str, dict[str, str | int]]  # may change later
 
 

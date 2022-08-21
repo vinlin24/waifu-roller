@@ -10,7 +10,7 @@ import time
 import pyautogui
 import rich
 
-from exceptions import DiscordNotOpenError
+from waifu.exceptions import DiscordNotOpenError
 
 # todo: Make configurable later
 # The sleep calls are to prevent potential latency problems

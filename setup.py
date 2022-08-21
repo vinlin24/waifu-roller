@@ -5,4 +5,5 @@ setup.py
 
 from setuptools import setup
 
-# todo
+# Configuration set up in setup.cfg
+setup()
