@@ -82,10 +82,21 @@ class Parser(ArgumentParser):
 
         _validate_config(defaults)
 
-        self.add_argument("command", nargs="?",
-                          default=defaults["mudae-command"])
-        self.add_argument("-c", "--channel",
-                          default=defaults["target-channel"])
-        self.add_argument("-n", "--num", type=int,
-                          default=defaults["num-rolls"])
-        self.add_argument("-d", "--daily", action="store_true")
+        self.add_argument(
+            "command",
+            nargs="?",
+            default=defaults["mudae-command"]
+        )
+        self.add_argument(
+            "-c", "--channel",
+            default=defaults["target-channel"]
+        )
+        self.add_argument(
+            "-n", "--num",
+            type=int,
+            default=defaults["num-rolls"]
+        )
+        self.add_argument(
+            "-d", "--daily",
+            action="store_true"
+        )

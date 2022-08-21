@@ -7,19 +7,15 @@ main.py
 Entry point and main process.
 """
 
-import _thread
-import signal
 import sys
 from argparse import Namespace
 from parser import Parser
-from types import FrameType
-from typing import NoReturn
 
-import keyboard
 import rich
 import rich.traceback
 import yaml
 
+from abort import register_abort_handlers
 from exceptions import ConfigFileError, ConfigFormatError
 from keystrokes import navigate_to_channel, start_rolling, wait_for_ready
 from open import open_discord
@@ -56,23 +52,20 @@ def load_yaml(config_path: str) -> ConfigDict:
         ) from None
 
 
-def abort_callback() -> NoReturn:  # type: ignore
-    """Attempt to exit the program.
-
-    Raises:
-        KeyboardInterrupt: Sends signal SIGINT to main thread.
-    """
-    rich.print("[bold red]Script interrupted with TAB key[/]")
-    # sys.exit() only interrupts keyboard listener thread
-    _thread.interrupt_main()
-
-
-def interrupt_handler(sig: int, frame: FrameType | None) -> NoReturn:
-    rich.print("[bold red]Script terminated[/]")
-    sys.exit()
-
-
 def run(ns: Namespace) -> None:
+    """Use command line arguments to run program.
+
+    Args:
+        ns (Namespace): Object returned from the program parser's
+        parse_args method. At the moment, it conveys the arguments:
+
+            - command (str)
+            - channel (str)
+            - num (int)
+            - daily (bool)
+
+        See open.Parser.__init__ for more details.
+    """
     # Unpack command line args
     command = ns.command
     channel = ns.channel
@@ -96,14 +89,8 @@ def run(ns: Namespace) -> None:
 def main() -> None:
     """Main driver function."""
     # Set up graceful exits
-    signal.signal(signal.SIGINT, interrupt_handler)
     rich.traceback.install()
-
-    # Set up abort handler
-    keyboard.add_hotkey("tab", abort_callback)
-    rich.print(
-        "[bold yellow]Abort the script at any time with the TAB key[/]"
-    )
+    register_abort_handlers()
 
     # Load config
     config = load_yaml(CONFIG_PATH)
