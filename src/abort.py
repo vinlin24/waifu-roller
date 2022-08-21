@@ -12,6 +12,7 @@ from types import FrameType
 from typing import NoReturn
 
 import keyboard
+import pyautogui
 import rich
 
 
@@ -51,3 +52,5 @@ def register_abort_handlers() -> None:
     rich.print(
         "[bold yellow]Abort the script at any time with the TAB key[/]"
     )
+    # Suppress pyautogui failsafe since TAB can be used now
+    pyautogui.FAILSAFE = False
