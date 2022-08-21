@@ -17,7 +17,7 @@ This project uses [PyAutoGUI](https://pypi.org/project/PyAutoGUI/) to automate t
 
 I'm kind of new to this whole distribution thing, so bear with my most-likely-unintuitive installation instructions. Frankly, setup.py is still magic to me, and despite all its documentation, it cannot be any more confusing to learn and debug.
 
-> :warning: At the moment, this application requires you to have Python >3.10 installed.
+> :warning: At the moment, this application requires you to have Python >=3.10 installed.
 
 Download the desired wheel file `waifu_roller-x.y.z-py3-none-any.whl` from the [`dist`](dist/) folder and install it with pip, preferably in a [virtual environment](https://docs.python.org/3/tutorial/venv.html):
 ```
