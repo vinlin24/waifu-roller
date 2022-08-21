@@ -7,9 +7,13 @@ main.py
 Entry point and main process.
 """
 
+import _thread
+import signal
 import sys
 from argparse import Namespace
 from parser import Parser
+from types import FrameType
+from typing import NoReturn
 
 import keyboard
 import rich
@@ -52,9 +56,20 @@ def load_yaml(config_path: str) -> ConfigDict:
         ) from None
 
 
-def abort_callback(event: keyboard.KeyboardEvent) -> None:
-    # todo
-    pass
+def abort_callback() -> NoReturn:  # type: ignore
+    """Attempt to exit the program.
+
+    Raises:
+        KeyboardInterrupt: Sends signal SIGINT to main thread.
+    """
+    rich.print("[bold red]Script interrupted with TAB key[/]")
+    # sys.exit() only interrupts keyboard listener thread
+    _thread.interrupt_main()
+
+
+def interrupt_handler(sig: int, frame: FrameType | None) -> NoReturn:
+    rich.print("[bold red]Script terminated[/]")
+    sys.exit()
 
 
 def run(ns: Namespace) -> None:
@@ -63,8 +78,6 @@ def run(ns: Namespace) -> None:
     channel = ns.channel
     num = ns.num
     daily = ns.daily
-
-    rich.print("[bold yellow]Abort at any time with Ctrl+C[/]")
 
     # todo: Make this process more intuitive - leave space at the start
     # to give instructions - maybe prompt <ENTER> in either case before
@@ -82,8 +95,15 @@ def run(ns: Namespace) -> None:
 
 def main() -> None:
     """Main driver function."""
-    # Set up global traceback handler for pretty exception printing
+    # Set up graceful exits
+    signal.signal(signal.SIGINT, interrupt_handler)
     rich.traceback.install()
+
+    # Set up abort handler
+    keyboard.add_hotkey("tab", abort_callback)
+    rich.print(
+        "[bold yellow]Abort the script at any time with the TAB key[/]"
+    )
 
     # Load config
     config = load_yaml(CONFIG_PATH)

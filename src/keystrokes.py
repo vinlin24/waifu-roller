@@ -22,10 +22,9 @@ ROLLING_COOLDOWN = 1.0  # seconds to wait between waifu roll attempts
 def wait_for_ready() -> None:
     """Block until the ENTER key is pressed."""
     rich.print(
-        "[bold yellow]Hit <ENTER> when application is finished loading "
+        "[bold yellow]Hit ENTER when application is finished loading "
         "to start the keystroke sequences[/]"
     )
-    # todo: Make KeyboardInterrupt more graceful
     keyboard.wait("enter")
 
 
