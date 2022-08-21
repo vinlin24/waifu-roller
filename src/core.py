@@ -1,5 +1,5 @@
 """
-keystrokes.py
+core.py
 20 August 2022 13:13:59
 
 The bulk of the pyautogui calls.
@@ -7,9 +7,10 @@ The bulk of the pyautogui calls.
 
 import time
 
-import keyboard
 import pyautogui
 import rich
+
+from exceptions import DiscordNotOpenError
 
 # todo: Make configurable later
 # The sleep calls are to prevent potential latency problems
@@ -19,13 +20,35 @@ TYPING_COOLDOWN = 0.05  # seconds to wait between character input
 ROLLING_COOLDOWN = 1.0  # seconds to wait between waifu roll attempts
 
 
-def wait_for_ready() -> None:
-    """Block until the ENTER key is pressed."""
-    rich.print(
-        "[bold yellow]Hit ENTER when application is finished loading "
-        "to start the keystroke sequences[/]"
-    )
-    keyboard.wait("enter")
+def open_discord() -> None:
+    """Move to the Discord desktop application.
+
+    Interface function to be called from main process.
+
+    Raises:
+        DiscordNotOpenError: Could not locate the Discord desktop
+        application as an open window.
+    """
+    # Filter list to find the one that's most likely the desktop app
+    win_list: list[pyautogui.Window] = \
+        pyautogui.getWindowsWithTitle("Discord")
+    for win in win_list:
+        title: str = win.title
+        if title == "Discord" or title.endswith("- Discord"):
+            break
+    else:
+        raise DiscordNotOpenError(
+            "Could not find a window resembling the Discord desktop "
+            "application out of the windows with 'Discord' in the title: "
+            f"{win_list or '<empty>'}"
+        )
+    # minimize -> maximize trick is a workaround to the PyGetWinException
+    # problem that happens when I try to accept input before activate()ing a
+    # window: https://github.com/asweigart/PyGetWindow/issues/36#issuecomment-919332733
+    win.minimize()
+    win.maximize()
+    win.activate()
+    rich.print("[bright_black]Moved to the Discord desktop application[/]")
 
 
 def navigate_to_channel(channel: str) -> None:

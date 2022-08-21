@@ -1,6 +1,16 @@
-# exceptions.py
+"""
+exceptions.py
+21 August 2022 01:05:57
 
-class ConfigError(Exception):
+Defines the custom exceptions for this program.
+"""
+
+
+class RollerError(Exception):
+    """Base class for all custom exceptions in this program."""
+
+
+class ConfigError(RollerError):
     """Error loading the configuration for the application."""
     pass
 
@@ -15,21 +25,6 @@ class ConfigFormatError(ConfigError):
     pass
 
 
-class OSNotSupportedError(Exception):
-    """Error from running application on unsupported OS."""
-    pass
-
-
-class DiscordStartupError(Exception):
-    """Error for starting the Discord app."""
-    pass
-
-
-class DiscordNotFoundError(DiscordStartupError):
-    """Error for when the Discord.exe cannot be located."""
-    pass
-
-
-class DiscordNotOpenError(DiscordStartupError):
+class DiscordNotOpenError(RollerError):
     """Error for when the Discord app is not open when it should be."""
     pass
