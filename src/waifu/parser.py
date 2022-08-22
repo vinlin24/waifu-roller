@@ -8,7 +8,10 @@ Implements the command line parser for this program.
 from argparse import ArgumentParser, Namespace
 from typing import Any, Sequence
 
-from waifu.exceptions import CommandError, ConfigFormatError
+import rich
+
+from waifu.exceptions import (CommandError, ConfigFormatError,
+                              get_config_path_tip)
 
 DefaultsDict = dict[str, str | int | None]
 
@@ -150,7 +153,12 @@ class Parser(ArgumentParser):
         try:
             ns = super().parse_args(args)
         except SystemExit:
-            raise  # todo, point to config.yaml location
+            rich.print(
+                f"[yellow]{get_config_path_tip()}[/]\n"
+                "You can include preferences for the command to use as "
+                "default options."
+            )
+            raise  # Give user useful info before quitting
 
         # Unpack args to validate
         command: str = ns.command

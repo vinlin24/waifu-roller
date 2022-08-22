@@ -5,6 +5,32 @@ exceptions.py
 Defines the custom exceptions for this program.
 """
 
+from pathlib import Path
+
+
+def get_user_config_path() -> Path:
+    """Return the cross-platform path to project's config file.
+
+    Windows example: after first time setup, the config file will be
+    located at:
+
+        C:\\Users\\USERNAME\\\0.config\\waifu-roller\\config.yaml
+
+    Returns:
+        Path: Path to the user's config file within .config.
+    """
+    return Path.home() / ".config" / "waifu-roller" / "config.yaml"
+
+
+def get_config_path_tip() -> str:
+    """Return a tip informing the user where their config file is.
+
+    Returns:
+        str: The tip as a string to output.
+    """
+    return ("[TIP] Your configuration file is located at this path: "
+            f"{get_user_config_path()}")
+
 
 class RollerError(Exception):
     """Base class for all custom exceptions in this program."""
@@ -12,7 +38,15 @@ class RollerError(Exception):
 
 class ConfigError(RollerError):
     """Error loading the configuration for the application."""
-    pass
+
+    def __init__(self, *args: object) -> None:
+        """Override to print useful info upon error."""
+        args += ("", get_config_path_tip())
+        super().__init__(*args)
+
+    def __str__(self) -> str:
+        """Override to print useful info upon error."""
+        return "\n".join(self.args)
 
 
 class ConfigFileError(ConfigError):

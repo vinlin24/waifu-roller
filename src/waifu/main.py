@@ -22,7 +22,11 @@ from waifu.parser import Parser
 def main() -> None:
     """Main driver function."""
     # Set up graceful exits
-    rich.traceback.install()
+    rich.traceback.install(
+        # Keep the traceback compact and tidy
+        extra_lines=1,
+        max_frames=1
+    )
     register_abort_handlers()
 
     # Load config

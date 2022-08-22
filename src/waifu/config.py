@@ -11,7 +11,8 @@ from typing import Any
 import rich
 import yaml
 
-from waifu.exceptions import ConfigFileError, ConfigFormatError
+from waifu.exceptions import (ConfigFileError, ConfigFormatError,
+                              get_user_config_path)
 
 CONFIG_FILE_TEMPLATE = """\
 ---
@@ -26,20 +27,6 @@ defaults:
 """
 
 
-def _get_user_config_path() -> Path:
-    """Return the cross-platform path to project's config file.
-
-    Windows example: after first time setup, the config file will be
-    located at:
-
-        C:\\Users\\USERNAME\\\0.config\\waifu-roller\\config.yaml
-
-    Returns:
-        Path: Path to the user's config file within .config.
-    """
-    return Path.home() / ".config" / "waifu-roller" / "config.yaml"
-
-
 def _set_up_config_file() -> Path:
     """Set up the config.yaml file if it does not exist yet.
 
@@ -47,7 +34,7 @@ def _set_up_config_file() -> Path:
         Path: Path to the config.yaml file, regardless if this function
         created it or not.
     """
-    config_path = _get_user_config_path()
+    config_path = get_user_config_path()
     first_time = not config_path.exists()
     if first_time:
         # Make the project's config directory if doesn't already exist
