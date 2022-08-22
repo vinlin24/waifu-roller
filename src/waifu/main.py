@@ -12,43 +12,11 @@ import sys
 import keyboard
 import rich
 import rich.traceback
-import yaml
 
 from waifu.abort import register_abort_handlers
+from waifu.config import load_config
 from waifu.core import navigate_to_channel, open_discord, start_rolling
-from waifu.exceptions import ConfigFileError, ConfigFormatError
 from waifu.parser import Parser
-
-CONFIG_PATH = "waifu/config.yaml"  # make configurable later
-ConfigDict = dict[str, dict[str, str | int]]  # may change later
-
-
-def load_yaml(config_path: str) -> ConfigDict:
-    """Load configuration options from YAML file.
-
-    Args:
-        config_path (str): Path to configuration file.
-
-    Raises:
-        ConfigFileError: There was an issue loading the file specified
-        by config_path.
-        ConfigFormatError: There was a formatting error in the content
-        of the configuration file.
-
-    Returns:
-        ConfigDict: The loaded configuration details.
-    """
-    try:
-        with open(config_path, "rt") as fp:
-            config = yaml.safe_load(fp)
-            config["defaults"]
-            return config
-    except OSError as e:
-        raise ConfigFileError(str(e)) from None
-    except KeyError as e:
-        raise ConfigFormatError(
-            f"Missing defaults option {e.args[0]!r} in configuration file"
-        ) from None
 
 
 def main() -> None:
@@ -58,7 +26,7 @@ def main() -> None:
     register_abort_handlers()
 
     # Load config
-    config = load_yaml(CONFIG_PATH)
+    config = load_config()
 
     # Parse command line arguments
     parser = Parser(config["defaults"])
