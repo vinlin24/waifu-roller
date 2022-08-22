@@ -74,7 +74,7 @@ On first run, the script will try to initialize a configuration file for you at 
 | Field                   | Type    | Description                                                                            | Default      |
 | ----------------------- | ------- | -------------------------------------------------------------------------------------- | ------------ |
 | verbose                 | boolean | Program verbosity level, and include config file path tip on --help and command error. | true         |
-| defaults                | mapping | Values to use when command line arguments are omitted.                                 | null (unset) |
+| defaults                | mapping | Values to use when command line arguments are omitted.                                 |              |
 | defaults.mudae-command  | string  | Default value for the command positional arg.                                          | null (unset) |
 | defaults.target-channel | string  | Default value for the -c/--channel option.                                             | null (unset) |
 | defaults.num-rolls      | int     | Default value for the -n/--num option.                                                 | null (unset) |
