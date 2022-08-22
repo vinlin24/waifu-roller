@@ -1,2 +1,0 @@
-[console_scripts]
-waifu = waifu.main:main

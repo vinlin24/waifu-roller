@@ -1,5 +1,3 @@
-# build.ps1
-
 <#
 Script for automating the build process and installing the generated
 wheel in local .venv for testing.
@@ -13,7 +11,10 @@ venv for development testing, but it ASSUMES that the generated wheel
 with the highest version substring is the one just built.
 #>
 
-function New-ProjectBuild {
+$SCRIPT_NAME = "build.ps1"
+$BUILD_LOG_PATH = ".\build.log"
+
+function Assert-ScriptConditions {
     # Assert that script is being run at build/ in an activated venv
     if (-Not $env:VIRTUAL_ENV) {
         Write-Host "Script should be run in a virtual environment, aborted." -ForegroundColor Red
@@ -24,9 +25,26 @@ function New-ProjectBuild {
         Write-Host "Script should be run at the project build directory, aborted." -ForegroundColor Red
         exit
     }
+}
 
-    Write-Host "Running build.ps1..." -ForegroundColor Green
+function Write-CustomOutput {
+    # Wrapper for writing log-like outputs
+    param (
+        [Parameter(Mandatory = $true)]
+        [System.Object]$Object,
+        [Parameter()]  # Learning note: () here is very important
+        [string]$Level = "INFO"
+    )
+    Write-Output "[$SCRIPT_NAME] $($Level): $Object"
+}
 
+function Exit-ThisScript {
+    # Exit script and notify console that process couldn't be completed
+    Write-Host "Could not complete $SCRIPT_NAME." -ForegroundColor Red
+    exit
+}
+
+function New-ProjectBuild {
     # Build the project source
     $srcDir = "..\src"
     python -m build $srcDir
@@ -35,21 +53,21 @@ function New-ProjectBuild {
     # Learning note: Join-Path always returns a string instead of FileInfo
     $generatedDir = Join-Path -Path $srcDir -ChildPath "dist"
     if (-Not (Test-Path $generatedDir)) {
-        Write-Host "Something went wrong, can't find the generated dist directory, aborted." -ForegroundColor Red
-        exit
+        Write-CustomOutput "Something went wrong, can't find the generated dist directory, aborted." -Level "ERROR"
+        Exit-ThisScript
     }
 
     # The x.y.z version part of the names orders them, use most updated wheel
     $wheelFiles = (Get-ChildItem -Path $generatedDir -Filter "*.whl")
     if ($wheelFiles.count -eq 0) {
-        Write-Host "Something went wrong, can't find a whl file, aborted." -ForegroundColor Red
-        exit
+        Write-CustomOutput "Something went wrong, can't find a whl file, aborted." -Level "ERROR"
+        Exit-ThisScript
     }
     $recentWheel = $wheelFiles[-1]  # Assume this was the one just built
 
     # Install the built wheel in the virtual environment
     pip install $recentWheel.FullName --force-reinstall
-    Write-Host "Finished attempting to pip install $recentWheel" -ForegroundColor Green
+    Write-CustomOutput "Finished attempting to pip install $recentWheel" -Level "INFO"
 
     # CLEANUP
 
@@ -59,10 +77,21 @@ function New-ProjectBuild {
     Move-Item -Path $generatedDirContents -Destination $rootDistDir -Force
 
     # Delete the now empty dist folder inside build/
-    Remove-Item $generatedDir
+    Remove-Item -Path $generatedDir
 
-    Write-Host "Finished executing build.ps1!" -ForegroundColor Green
+    # Delete the generated .egg-info directory as well
+    $eggDir = Join-Path -Path $srcDir -ChildPath "*.egg-info"
+    Remove-Item -Path $eggDir -Recurse
+    
+    Write-CustomOutput "Finished cleaning up generated dist and egg-info directories" -Level "INFO"
 }
 
+# Check this first
+Assert-ScriptConditions
+
+Write-Host "Running $SCRIPT_NAME..." -ForegroundColor Green
+
 # Output to both console and log file
-New-ProjectBuild | Tee-Object -FilePath ".\build.log"
+New-ProjectBuild | Tee-Object -FilePath $BUILD_LOG_PATH
+
+Write-Host "Finished executing $SCRIPT_NAME!" -ForegroundColor Green
