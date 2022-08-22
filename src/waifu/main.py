@@ -29,11 +29,15 @@ def main() -> None:
     )
     register_abort_handlers()
 
-    # Load config
+    # Load and validate config
     config = load_config()
 
+    # Unpack validated config options
+    verbose: bool = config["verbose"]
+    defaults: dict = config["defaults"]
+
     # Parse command line arguments
-    parser = Parser(config["defaults"])
+    parser = Parser(defaults, verbose)
     ns = parser.parse_args(sys.argv[1:])
 
     # Display tip if command is validated
@@ -53,7 +57,7 @@ def main() -> None:
         "[green]"
         f"You have chosen to roll with the Mudae command '${command}' "
         f"{num} times in the channel queried with {channel!r}, and have "
-        f"{'' if daily else 'NOT '}opted to run the daily commands as well."
+        f"opted to {'' if daily else 'NOT '}run the daily commands as well."
         "[/]"
     )
     rich.print("Hit ENTER to continue, or ^C to quit: ")
@@ -61,7 +65,10 @@ def main() -> None:
     keyboard.wait("enter")
 
     # PyAutoGUI sequences
-    run_autogui(command, channel, num, daily)
+    run_autogui(command, channel, num, daily, verbose)
+
+    # All went well!
+    rich.print("[green]Script terminated successfully.[/]")
 
 
 if __name__ == "__main__":

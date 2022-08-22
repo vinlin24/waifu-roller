@@ -21,7 +21,7 @@ CONFIG_FILE_SCHEMA: dict[str, type] = {
 
 CONFIG_FILE_TEMPLATE: str = """\
 ---
-# true | false
+# true (default) or false
 verbose: true
 
 # Values to use when command line arguments are omitted

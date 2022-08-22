@@ -20,10 +20,13 @@ TYPING_COOLDOWN = 0.05  # seconds to wait between character input
 ROLLING_COOLDOWN = 1.0  # seconds to wait between waifu roll attempts
 
 
-def _open_discord() -> None:
+def _open_discord(verbose: bool) -> None:
     """Move to the Discord desktop application.
 
     Interface function to be called from main process.
+
+    Args:
+        verbose (bool): Configuration preference.
 
     Raises:
         DiscordNotOpenError: Could not locate the Discord desktop
@@ -48,10 +51,11 @@ def _open_discord() -> None:
     win.minimize()
     win.maximize()
     win.activate()
-    rich.print("[bright_black]Moved to the Discord desktop application[/]")
+    if verbose:
+        rich.print("[bright_black]Moved to the Discord desktop application[/]")
 
 
-def _navigate_to_channel(channel: str) -> None:
+def _navigate_to_channel(channel: str, verbose: bool) -> None:
     """Navigate to the target channel within Discord to roll in.
 
     This function does not guarantee that focus is brought to the
@@ -61,13 +65,15 @@ def _navigate_to_channel(channel: str) -> None:
         channel (str): The command line argument that specifies the
         query string to submit to the Discord search bar to locate the
         channel to roll in.
+        verbose (bool): Configuration preference.
     """
     # In case user put the # in there themselves
     search = "#" + channel.removeprefix("#")
-    rich.print(
-        "[bright_black]Navigating by searching for channel with query "
-        f"{search!r}...[/]"
-    )
+    if verbose:
+        rich.print(
+            "[bright_black]Navigating by searching for channel with query "
+            f"{search!r}...[/]"
+        )
 
     # In case search bar was already up for some reason
     pyautogui.hotkey("esc")
@@ -86,13 +92,14 @@ def _navigate_to_channel(channel: str) -> None:
     # Focus text area
     pyautogui.hotkey("esc")
     time.sleep(ACTION_COOLDOWN)
-    rich.print(
-        "[bright_black]Finished navigating, focused text area, and ready to "
-        "roll[/]"
-    )
+    if verbose:
+        rich.print(
+            "[bright_black]Finished navigating, focused text area, and ready "
+            "to roll[/]"
+        )
 
 
-def _start_rolling(command: str, num: int, daily: bool) -> None:
+def _start_rolling(command: str, num: int, daily: bool, verbose: bool) -> None:
     """Repeatedly enter the roll command into the channel.
 
     Args:
@@ -104,24 +111,33 @@ def _start_rolling(command: str, num: int, daily: bool) -> None:
         daily (bool): The command line flag specifying whether the
         daily Mudae commands, $daily and $dailykakera, should be run in
         addition to the rolling this session.
+        verbose (bool): Configuration preference.
     """
-    rich.print(f"[bright_black]Starting to roll with {command=}...[/]")
+    if verbose:
+        rich.print(f"[bright_black]Starting to roll with {command=}...[/]")
     for attempt_num in range(1, num + 1):
         pyautogui.typewrite(f"${command}\n")
-        rich.print(
-            f"[bright_black]Attempted to roll ({attempt_num}/{num})[/]"
-        )
+        if verbose:
+            rich.print(
+                f"[bright_black]Attempted to roll ({attempt_num}/{num})[/]"
+            )
         time.sleep(ROLLING_COOLDOWN)
-    rich.print("[green]Finished rolling[/]")
+    if verbose:
+        rich.print("[green]Finished rolling[/]")
 
     if daily:
         pyautogui.typewrite(f"$daily\n")
         time.sleep(ROLLING_COOLDOWN)
         pyautogui.typewrite(f"$dk\n")
-        rich.print("[green]Finished running daily commands[/]")
+        if verbose:
+            rich.print("[green]Finished running daily commands[/]")
 
 
-def run_autogui(command: str, channel: str, num: int, daily: bool) -> None:
+def run_autogui(command: str,
+                channel: str,
+                num: int,
+                daily: bool,
+                verbose: bool) -> None:
     """Bundle PyAutoGUI actions used to accomplish script.
 
     Interface function to be called from main process.
@@ -131,7 +147,8 @@ def run_autogui(command: str, channel: str, num: int, daily: bool) -> None:
         channel (str): Arg extracted from parser namespace.
         num (int): Arg extracted from parser namespace.
         daily (bool): Arg extracted from parser namespace.
+        verbose (bool): Configuration preference.
     """
-    _open_discord()
-    _navigate_to_channel(channel)
-    _start_rolling(command, num, daily)
+    _open_discord(verbose)
+    _navigate_to_channel(channel, verbose)
+    _start_rolling(command, num, daily, verbose)

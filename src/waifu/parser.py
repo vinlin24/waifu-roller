@@ -73,13 +73,15 @@ class Parser(ArgumentParser):
     daily commands $dk and $daily after the rolling session.
     """
 
-    def __init__(self, defaults: DefaultsDict) -> None:
+    def __init__(self, defaults: DefaultsDict, verbose: bool) -> None:
         """Initialize the parser for this program.
 
         Args:
             defaults (DefaultsDict): Default choices for
             command string, target channel, number of rolls from config
             file.
+            verbose (bool): Configuration preference. If True, will
+            print config file tip on command error.
 
         Raises:
             ConfigFormatError: If there is any problem in the format of
@@ -87,6 +89,7 @@ class Parser(ArgumentParser):
             types, bad argument range or characters, etc.
         """
         super().__init__(description="Roll waifus on Discord")
+        self._verbose = verbose
 
         # VALIDATE DEFAULTS
         # Unpack default choices from config
@@ -153,11 +156,12 @@ class Parser(ArgumentParser):
         try:
             ns = super().parse_args(args)
         except SystemExit:
-            rich.print(
-                f"[yellow]{get_config_path_tip()}[/]\n"
-                "You can include preferences for the command to use as "
-                "default options."
-            )
+            if self._verbose:
+                rich.print(
+                    f"[yellow]{get_config_path_tip()}[/]\n"
+                    "You can include preferences for the command to use as "
+                    "default options."
+                )
             raise  # Give user useful info before quitting
 
         # Unpack args to validate
