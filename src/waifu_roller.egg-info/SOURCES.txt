@@ -1,4 +1,3 @@
-README.md
 setup.cfg
 setup.py
 waifu/__init__.py
