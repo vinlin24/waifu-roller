@@ -36,11 +36,18 @@ $ waifu wa -c waifu-spam -n 10 -d
 ```
 This rolls the Mudae command $wa 10 times in the channel named waifu-spam. The -d flag appends the daily commands $dk and $daily after the rolling session.
 
-You can also omit arguments and opt to use the default values set in the config.yaml file (work-in-progress, see warning [below](#limitations)):
+You can also omit arguments and opt to use the default values set in the [config.yaml](#configuration) file. This could be useful if you roll most commonly in a specific channel on a specific server.
 ```
 $ waifu
 ```
-This could be useful if you roll most commonly in a specific channel on a specific server.
+
+:hammer: Todo: document the command line arguments.
+
+## Configuration
+
+On first run, the script will try to initialize a configuration file for you at `~/.config/waifu-roller/config.yaml`. You can edit the program preferences here.
+
+:hammer: Todo: document the config.yaml schema.
 
 ## Limitations
 
@@ -48,10 +55,9 @@ This project is still incomplete, and as of now, it has only been tested on my l
 
 Missing (but planned) features:
 - [ ] Configurable delays in the PyAutoGUI sequences
-- [ ] Validating command line arguments instead of just the values in the configuration file
+- [x] Validating command line arguments instead of just the values in the configuration file
 - [ ] Option for returning to the last active window after script is complete
-- [ ] Including instructions on where the configuration file is and how to edit it
-> :warning: Right now it's empty so unless you know to sneak into the `site-packages`, the current distribution flat-out fails with a `ConfigFormatError` on startup lmao.
+- [x] Including instructions on where the configuration file is and how to edit it
 - [ ] Binary distributions that do not require Python installed on the user's machine
 - [ ] Hotkey to pause and resume the script (to make claiming a character or kakera drop easier) in addition to the existing kill key (`TAB` at the moment)
 - [ ] (:unamused: might give up on this one) Option to start the Discord desktop application if it is not already open. I tried implementing this already but it will make cross-platform coding much more challenging (differing Discord.exe locations and startfile protocols) and has an obscure problem I couldn't fix: right after startup, Ctrl+K, then typing in the channel name, sending the ENTER key causes the stupid [Learn more](https://support.discord.com/hc/en-us/articles/115000070311) link on the popup to enter focus and open the webpage
