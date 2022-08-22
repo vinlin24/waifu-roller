@@ -27,6 +27,17 @@ function Assert-ScriptConditions {
     }
 }
 
+function Read-Confirmation {
+    # Reminder and ask for confirmation
+    Write-Host "About to build project source. Did you remember to update the version string in setup.cfg? (y/N) " -NoNewline -ForegroundColor Yellow
+    $confirmation = Read-Host
+    # Learning note: PS -eq/-ne is case-insensitive, -ceq/-cne is case-sensitive
+    if ($confirmation -ne "y") {
+        Write-Host "$SCRIPT_NAME canceled." -ForegroundColor Red
+        exit
+    }
+}
+
 function Write-CustomOutput {
     # Wrapper for writing log-like outputs
     param (
@@ -86,8 +97,9 @@ function New-ProjectBuild {
     Write-CustomOutput "Finished cleaning up generated dist and egg-info directories" -Level "INFO"
 }
 
-# Check this first
+# Check these first
 Assert-ScriptConditions
+Read-Confirmation
 
 Write-Host "Running $SCRIPT_NAME..." -ForegroundColor Green
 
