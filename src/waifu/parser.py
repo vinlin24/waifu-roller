@@ -6,33 +6,14 @@ Implements the command line parser for this program.
 """
 
 from argparse import ArgumentParser
+from typing import Any
 
 from waifu.exceptions import ConfigFormatError
 
-DefaultsDict = dict[str, str | int]
+DefaultsDict = dict[str, str | int | None]
 
 
-def _validate_config(defaults: DefaultsDict) -> None:
-    """Raise an error if default options are not properly formatted.
-
-    Args:
-        defaults (DefaultsDict): Dict of default values to validate.
-
-    Raises:
-        ConfigFormatError: If there is any problem in the format of the
-        defaults dict, including missing keys, incorrect data types,
-        bad argument range or characters, etc.
-    """
-    # Unpack default choices from config
-    try:
-        command = defaults["mudae-command"]
-        channel = defaults["target-channel"]
-        num_rolls = defaults["num-rolls"]
-    except KeyError as e:
-        raise ConfigFormatError(
-            f"Missing defaults option {e.args[0]!r} in configuration file"
-        ) from None
-
+def _validate_default_command(command: Any) -> None:
     # Validate format: command should not be prefixed
     if not isinstance(command, str) or command.startswith(("$", "/")):
         raise ConfigFormatError(
@@ -40,6 +21,9 @@ def _validate_config(defaults: DefaultsDict) -> None:
             "'mudae-command': should be a string and not command-prefixed "
             "(e.g. 'wa')"
         )
+
+
+def _validate_default_channel(channel: Any) -> None:
     # Validate format: channel name shouldn't have spaces in it
     if not isinstance(channel, str) or any(c.isspace() for c in channel):
         raise ConfigFormatError(
@@ -47,6 +31,9 @@ def _validate_config(defaults: DefaultsDict) -> None:
             "'target-channel': should be a string and not contain any "
             "whitespace (e.g. waifu-spam)"
         )
+
+
+def _validate_default_num_rolls(num_rolls: Any) -> None:
     # Validate format: num_rolls should be non-negative
     if not isinstance(num_rolls, int) or num_rolls < 0:
         raise ConfigFormatError(
@@ -60,7 +47,7 @@ class Parser(ArgumentParser):
 
     Intended syntax example:
     ```
-    roll wa -c digimon-waifus -n 16
+    waifu wa -c digimon-waifus -n 16
     ```
     For rolling with command "$wa" 16 times in the first channel found
     by searching "digimon-waifus".
@@ -75,28 +62,54 @@ class Parser(ArgumentParser):
             file.
 
         Raises:
-            ConfigFormatError: If defaults has a formatting error as
-            checked by _validate_config.
+            ConfigFormatError: If there is any problem in the format of
+            the defaults dict, including missing keys, incorrect data
+            types, bad argument range or characters, etc.
         """
         super().__init__(description="Roll waifus on Discord")
 
-        _validate_config(defaults)
+        # VALIDATE DEFAULTS
+        # Unpack default choices from config
+        try:
+            command = defaults["mudae-command"]
+            channel = defaults["target-channel"]
+            num_rolls = defaults["num-rolls"]
+        except KeyError as e:
+            raise ConfigFormatError(
+                f"Missing defaults option {e.args[0]!r} in configuration file"
+            ) from None
 
-        self.add_argument(
-            "command",
-            nargs="?",
-            default=defaults["mudae-command"]
-        )
-        self.add_argument(
-            "-c", "--channel",
-            default=defaults["target-channel"]
-        )
-        self.add_argument(
-            "-n", "--num",
-            type=int,
-            default=defaults["num-rolls"]
-        )
-        self.add_argument(
-            "-d", "--daily",
-            action="store_true"
-        )
+        # For all of these options, configure the add_argument() kwargs
+        # differently for if they are provided or not
+        # If they aren't set (left as None), then the parser should
+        # treat those options as required.
+
+        command_kwargs = {}
+        if command is not None:
+            _validate_default_command(command)
+            command_kwargs.update({
+                "nargs": "?",
+                "default": command
+            })
+
+        channel_kwargs = {"required": True}
+        if channel is not None:
+            _validate_default_channel(channel)
+            channel_kwargs.update({
+                "default": channel,
+                "required": False
+            })  # type: ignore
+
+        num_rolls_kwargs = {"type": int, "required": True}
+        if num_rolls is not None:
+            _validate_default_num_rolls(num_rolls)
+            num_rolls_kwargs.update({
+                "default": num_rolls,
+                "required": False
+            })  # type: ignore
+
+        self.add_argument("command", **command_kwargs)
+        self.add_argument("-c", "--channel", **channel_kwargs)
+        self.add_argument("-n", "--num", **num_rolls_kwargs)
+        # This one is not configurable
+        self.add_argument("-d", "--daily", action="store_true")

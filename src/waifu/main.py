@@ -32,6 +32,12 @@ def main() -> None:
     parser = Parser(config["defaults"])
     ns = parser.parse_args(sys.argv[1:])
 
+    # Display tip if command is validated
+    rich.print(
+        "[bold yellow]Note: You can abort the script at any time with the "
+        "TAB key[/]"
+    )
+
     # Unpack command line args
     command: str = ns.command
     channel: str = ns.channel

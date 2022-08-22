@@ -53,9 +53,5 @@ def register_abort_handlers() -> None:
     signal.signal(signal.SIGINT, _interrupt_handler)
     # Set up custom abort handler
     keyboard.add_hotkey("tab", _custom_abort_callback)
-    rich.print(
-        "[bold yellow]Note: You can abort the script at any time with the "
-        "TAB key[/]"
-    )
     # Suppress pyautogui failsafe since TAB can be used now
     pyautogui.FAILSAFE = False
