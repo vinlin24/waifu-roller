@@ -16,7 +16,20 @@ import rich.traceback
 from waifu.abort import register_abort_handlers
 from waifu.config import load_config
 from waifu.core import run_autogui
+from waifu.exceptions import get_user_config_path
 from waifu.parser import Parser
+
+
+def version_callback() -> None:
+    """Callback for if the -v/--version flag is used."""
+    rich.print(
+        "TODO"  # todo
+    )
+
+
+def config_callback() -> None:
+    """Callback for if the --config flag is used."""
+    rich.print(get_user_config_path())
 
 
 def main() -> None:
@@ -40,17 +53,28 @@ def main() -> None:
     parser = Parser(defaults, verbose)
     ns = parser.parse_args(sys.argv[1:])
 
-    # Display tip if command is validated
-    rich.print(
-        "[bold yellow]Note: You can abort the script at any time with the "
-        "TAB key[/]"
-    )
-
     # Unpack command line args
     command: str = ns.command
     channel: str = ns.channel
     num: int = ns.num
     daily: bool = ns.daily
+    version_flag: bool = ns.version
+    config_flag: bool = ns.config
+
+    # If either or both of the info flags are included, use their callbacks
+    # instead of the continuing with the script
+    if version_flag:
+        version_callback()
+    if config_flag:
+        config_callback()
+    if version_flag or config_flag:
+        raise SystemExit
+
+    # Display tip now that command is validated
+    rich.print(
+        "[bold yellow]Note: You can abort the script at any time with the "
+        "TAB key[/]"
+    )
 
     # Echo the chosen options and prompt continuation
     rich.print(
