@@ -20,7 +20,7 @@ TYPING_COOLDOWN = 0.05  # seconds to wait between character input
 ROLLING_COOLDOWN = 1.0  # seconds to wait between waifu roll attempts
 
 
-def open_discord() -> None:
+def _open_discord() -> None:
     """Move to the Discord desktop application.
 
     Interface function to be called from main process.
@@ -51,7 +51,7 @@ def open_discord() -> None:
     rich.print("[bright_black]Moved to the Discord desktop application[/]")
 
 
-def navigate_to_channel(channel: str) -> None:
+def _navigate_to_channel(channel: str) -> None:
     """Navigate to the target channel within Discord to roll in.
 
     This function does not guarantee that focus is brought to the
@@ -92,7 +92,7 @@ def navigate_to_channel(channel: str) -> None:
     )
 
 
-def start_rolling(command: str, num: int, daily: bool) -> None:
+def _start_rolling(command: str, num: int, daily: bool) -> None:
     """Repeatedly enter the roll command into the channel.
 
     Args:
@@ -119,3 +119,19 @@ def start_rolling(command: str, num: int, daily: bool) -> None:
         time.sleep(ROLLING_COOLDOWN)
         pyautogui.typewrite(f"$dk\n")
         rich.print("[green]Finished running daily commands[/]")
+
+
+def run_autogui(command: str, channel: str, num: int, daily: bool) -> None:
+    """Bundle PyAutoGUI actions used to accomplish script.
+
+    Interface function to be called from main process.
+
+    Args:
+        command (str): Arg extracted from parser namespace.
+        channel (str): Arg extracted from parser namespace.
+        num (int): Arg extracted from parser namespace.
+        daily (bool): Arg extracted from parser namespace.
+    """
+    _open_discord()
+    _navigate_to_channel(channel)
+    _start_rolling(command, num, daily)

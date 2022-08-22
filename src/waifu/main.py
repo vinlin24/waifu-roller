@@ -15,7 +15,7 @@ import rich.traceback
 
 from waifu.abort import register_abort_handlers
 from waifu.config import load_config
-from waifu.core import navigate_to_channel, open_discord, start_rolling
+from waifu.core import run_autogui
 from waifu.parser import Parser
 
 
@@ -56,10 +56,8 @@ def main() -> None:
     # Use instead of input() as workaround for funky TAB abort behavior
     keyboard.wait("enter")
 
-    # pyautogui sequences
-    open_discord()
-    navigate_to_channel(channel)
-    start_rolling(command, num, daily)
+    # PyAutoGUI sequences
+    run_autogui(command, channel, num, daily)
 
 
 if __name__ == "__main__":
