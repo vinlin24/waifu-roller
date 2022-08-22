@@ -9,13 +9,9 @@ Suppose you're in the zone coding, but it's a new hour and you can roll for waif
 $ waifu -c waifu-spam -n 10
 ```
 
-This project uses [PyAutoGUI](https://pypi.org/project/PyAutoGUI/) to automate the process of switching to the app, navigating to the channel, and entering commands.
-
-> :mega: **No asking for user tokens, no Discord self-botting, no automatic claiming or sniping.** This silly script is intended to just free up your hands while you watch the rolls go by.
+> :mega: **No asking for user tokens, no Discord self-botting, no automatic claiming or sniping.** This project uses [PyAutoGUI](https://pypi.org/project/PyAutoGUI/) to automate the process of switching to the app, navigating to the channel, and entering commands. This silly script is intended to just free up your hands while you watch the rolls go by.
 
 ## Installation
-
-I'm kind of new to this whole distribution thing, so bear with my most-likely-unintuitive installation instructions. Frankly, setup.py is still magic to me, and despite all its documentation, it cannot be any more confusing to learn and debug.
 
 > :warning: At the moment, this application requires you to have Python >=3.10 installed.
 
@@ -34,20 +30,56 @@ The CLI command is `waifu`:
 ```
 $ waifu wa -c waifu-spam -n 10 -d
 ```
-This rolls the Mudae command $wa 10 times in the channel named waifu-spam. The -d flag appends the daily commands $dk and $daily after the rolling session.
+This example rolls the Mudae command $wa 10 times in the channel named waifu-spam. The optional -d flag appends the daily commands $dk and $daily after the rolling session.
 
 You can also omit arguments and opt to use the default values set in the [config.yaml](#configuration) file. This could be useful if you roll most commonly in a specific channel on a specific server.
 ```
 $ waifu
 ```
+As usual, use the help flag for a full list of arguments:
+```
+$ waifu --help
+```
 
-:hammer: Todo: document the command line arguments.
+### Command Reference
+
+
+
+| Argument             | Type           | Description                                                                                                                       | Example      |
+| -------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| command              | positional     | Name of the Mudae command to use to roll for characters. It should be unprefixed (no $, /, etc.).                                 | 'wa'         |
+| -c/--channel CHANNEL | option (1 arg) | Query string to submit to the Discord search bar to locate the channel to roll in. It should not contain whitespace.              | 'waifu-spam' |
+| -n/--num NUM         | option (1 arg) | Number of times to roll in this session. Should be nonnegative.                                                                   | 10           |
+| -d/--daily           | option (flag)  | Flag specifying whether the daily Mudae commands, $daily and $dailykakera, should be run in addition to the rolling this session. |              |
+
+> :hammer: Todo: Update this reference every time a new command feature is added.
+
+You can also use the following flags to display helpful information instead of rolling:
+
+| Flag         | Description                          |
+| ------------ | ------------------------------------ |
+| -h/--help    | Display help message.                |
+| -v/--version | Display version of installed script. |
+| --config     | Display path of configuration file.  |
+
 
 ## Configuration
 
 On first run, the script will try to initialize a configuration file for you at `~/.config/waifu-roller/config.yaml`. You can edit the program preferences here.
 
-:hammer: Todo: document the config.yaml schema.
+### Configuration Reference
+
+> :hammer: Todo: Update this schema every time a new configuration feature is added.
+
+| Field                   | Type    | Description                                           | Default      |
+| ----------------------- | ------- | ----------------------------------------------------- | ------------ |
+| verbose                 | boolean |                                                       | true         |
+| defaults                | mapping | Values to use when command line arguments are omitted | null (unset) |
+| defaults.mudae-command  | string  | Default value for the command positional arg          | null (unset) |
+| defaults.target-channel | string  | Default value for the -c/--channel option             | null (unset) |
+| defaults.num-rolls      | int     | Default value for the -n/--num option.                | null (unset) |
+
+The generated config.yaml has helpful comments above each field as well :thumbsup:.
 
 ## Limitations
 
