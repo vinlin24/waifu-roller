@@ -14,8 +14,16 @@ import yaml
 from waifu.exceptions import (ConfigFileError, ConfigFormatError,
                               get_user_config_path)
 
-CONFIG_FILE_TEMPLATE = """\
+CONFIG_FILE_SCHEMA: dict[str, type] = {
+    "verbose": bool,
+    "defaults": dict  # subkeys validated in parser.Parser
+}
+
+CONFIG_FILE_TEMPLATE: str = """\
 ---
+# true | false
+verbose: true
+
 # Values to use when command line arguments are omitted
 defaults:
   # Name of command (no $ or / prefix)
@@ -47,8 +55,8 @@ def _set_up_config_file() -> Path:
             fp.write(CONFIG_FILE_TEMPLATE)
         rich.print(
             "[green]We noticed you didn't have a configuration file set up "
-            "yet, so we went ahead and did that for you. You can update your "
-            f"preferences at [/][bold yellow]{config_path}[/]"
+            "yet, so we went ahead and made one for you. You can update your "
+            f"preferences at: [/][bold yellow]{config_path}[/]"
         )
     return config_path
 
@@ -60,19 +68,32 @@ ConfigDict = dict[str, Any]
 def _validate_config_format(config: ConfigDict) -> None:
     """Raise helpful errors for any format violation in loaded config.
 
+    I recognize that there are existing projects that help validate
+    YAML but I would like finer control over the errors. Also, this is
+    dependency hell enough.
+
     Args:
         config (ConfigDict): The configuration loaded from config.yaml.
 
     Raises:
         ConfigFormatError: If there is any format violation.
     """
-    # Assert that these keys exist
-    try:
-        config["defaults"]
-    except KeyError as e:
-        raise ConfigFormatError(
-            f"Missing option {e.args[0]!r} in configuration file"
-        ) from None
+    for key, expected_type in CONFIG_FILE_SCHEMA.items():
+        # Assert that the expected keys exist
+        try:
+            loaded_type = type(config[key])
+        except KeyError as e:
+            raise ConfigFormatError(
+                f"Missing option {e.args[0]!r} in configuration file"
+            ) from None
+
+        # Assert that the top-level elements are the right type
+        # Nested structures like defaults are validated separately
+        if loaded_type is not expected_type:
+            raise ConfigFormatError(
+                f"Option {key!r} should be type {expected_type.__name__}, "
+                f"got {loaded_type.__name__} instead"
+            )
 
 
 def load_config() -> ConfigDict:
