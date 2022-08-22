@@ -29,7 +29,7 @@ function Assert-ScriptConditions {
 
 function Read-Confirmation {
     # Reminder and ask for confirmation
-    Write-Host "About to build project source. Did you remember to update the version string in setup.cfg? (y/N) " -NoNewline -ForegroundColor Yellow
+    Write-Host "About to build project source. Did you remember to update the version string in BOTH src/waifu/__init__.py and src/setup.cfg? (y/N) " -NoNewline -ForegroundColor Yellow
     $confirmation = Read-Host
     # Learning note: PS -eq/-ne is case-insensitive, -ceq/-cne is case-sensitive
     if ($confirmation -ne "y") {

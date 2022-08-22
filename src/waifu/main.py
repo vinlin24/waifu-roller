@@ -13,6 +13,7 @@ import keyboard
 import rich
 import rich.traceback
 
+from waifu import __version__
 from waifu.abort import register_abort_handlers
 from waifu.config import load_config
 from waifu.core import run_autogui
@@ -22,9 +23,7 @@ from waifu.parser import Parser
 
 def version_callback() -> None:
     """Callback for if the -v/--version flag is used."""
-    rich.print(
-        "TODO"  # todo
-    )
+    rich.print(f"waifu-roller {__version__}")
 
 
 def config_callback() -> None:
