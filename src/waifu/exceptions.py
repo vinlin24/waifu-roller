@@ -28,3 +28,8 @@ class ConfigFormatError(ConfigError):
 class DiscordNotOpenError(RollerError):
     """Error for when the Discord app is not open when it should be."""
     pass
+
+
+class CommandError(RollerError):
+    """Error relating to command input. Meant to be caught."""
+    pass
