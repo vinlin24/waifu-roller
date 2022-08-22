@@ -1,3 +1,6 @@
+![Build Version](https://img.shields.io/badge/version-0.0.1-green)
+![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)
+
 # Coder's Waifu Roller
 
 ## Description
