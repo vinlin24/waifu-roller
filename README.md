@@ -8,12 +8,12 @@
 
 **Command line tool for rolling anime/game characters with the Discord bot [Mudae](https://top.gg/bot/432610292342587392).**
 
-Suppose you're in the zone coding, but it's a new hour and you can roll for waifus again. Before you'd switch to Discord, find the channel, and brainlessly spam enter `$wa` or something. Now you can start the whole rolling sequence right from the command line (that you should always have open anyway :relieved:).
+Suppose you're in the zone coding, but it's a new hour and you can roll for waifus again. Before you'd switch to Discord, find the channel, and brainlessly spam enter `$wa` or something. Now you can start the whole rolling sequence right from the command line:
 ```
 $ waifu -c waifu-spam -n 10
 ```
 
-> :mega: **No asking for user tokens, no Discord self-botting, no automatic claiming or sniping.** This project uses [PyAutoGUI](https://pypi.org/project/PyAutoGUI/) to automate the process of switching to the app, navigating to the channel, and entering commands. This silly script is intended to just free up your hands while you watch the rolls go by.
+> :mega: **No asking for user tokens, no Discord self-botting, no automatic claiming or sniping.** This project uses [PyAutoGUI](https://pypi.org/project/PyAutoGUI/) to automate the process of switching to the app, navigating to the channel, and entering commands. This silly script is intended to just free up your hands a little while you watch the rolls go by.
 
 ## Installation
 
@@ -36,11 +36,11 @@ $ waifu wa -c waifu-spam -n 10 -d
 ```
 This example rolls the Mudae command $wa 10 times in the channel named waifu-spam. The optional -d flag appends the daily commands $dk and $daily after the rolling session.
 
-You can also omit arguments and opt to use the default values set in the [config.yaml](#configuration) file. This could be useful if you roll most commonly in a specific channel on a specific server.
+You can also omit arguments and opt to use the default values set in the [config.yaml](#configuration) file. This could be useful if you roll most commonly in a specific channel on a specific server:
 ```
 $ waifu
 ```
-As usual, use the help flag for a full list of arguments, or use the config flag to get the full path to your [configuration file](#configuration).
+As usual, use the help flag for a full list of arguments, or use the config flag to get the full path to your [configuration file](#configuration):
 ```
 $ waifu --help
 $ waifu --config
@@ -100,5 +100,5 @@ As of now, the builds have only been tested on my local PC, which is a Windows 1
 
 If you want to simulate my virtual environment, you can use the provided [requirements.txt](requirements.txt) after installing the wheel file:
 ```
-(.venv) python -m pip install -r requirements.txt
+(.venv) $ python -m pip install -r requirements.txt
 ```
