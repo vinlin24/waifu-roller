@@ -92,5 +92,5 @@ Missing (but planned) features:
 - [ ] Option for returning to the last active window after script is complete
 - [x] Including instructions on where the configuration file is and how to edit it
 - [ ] Binary distributions that do not require Python installed on the user's machine
-- [ ] Hotkey to pause and resume the script (to make claiming a character or kakera drop easier) in addition to the existing kill key (`TAB` at the moment)
+- [ ] Hotkey to pause and resume the script (to make claiming a character or kakera drop easier) in addition to the existing kill key (`ESC` at the moment)
 - [ ] (:unamused: might give up on this one) Option to start the Discord desktop application if it is not already open. I tried implementing this already but it will make cross-platform coding much more challenging (differing Discord.exe locations and startfile protocols) and has an obscure problem I couldn't fix: right after startup, Ctrl+K, then typing in the channel name, sending the ENTER key causes the stupid [Learn more](https://support.discord.com/hc/en-us/articles/115000070311) link on the popup to enter focus and open the webpage

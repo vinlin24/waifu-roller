@@ -14,7 +14,7 @@ import rich
 import rich.traceback
 
 from waifu import __version__
-from waifu.abort import register_abort_handlers
+from waifu.abort import ABORT_KEY, register_abort_handlers
 from waifu.config import load_config
 from waifu.core import run_autogui
 from waifu.exceptions import get_user_config_path
@@ -72,7 +72,7 @@ def main() -> None:
     # Display tip now that command is validated
     rich.print(
         "[bold yellow]Note: You can abort the script at any time with the "
-        "TAB key[/]"
+        f"{ABORT_KEY.upper()} key[/]"
     )
 
     # Echo the chosen options and prompt continuation
@@ -84,7 +84,7 @@ def main() -> None:
         "[/]"
     )
     rich.print("Hit ENTER to continue, or ^C to quit: ")
-    # Use instead of input() as workaround for funky TAB abort behavior
+    # Use instead of input() as workaround for funky abort key behavior
     keyboard.wait("enter")
 
     # PyAutoGUI sequences

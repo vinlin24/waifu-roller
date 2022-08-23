@@ -15,6 +15,8 @@ import keyboard
 import pyautogui
 import rich
 
+ABORT_KEY = "esc"
+
 
 def _custom_abort_callback() -> NoReturn:
     """Attempt to exit the program by interrupting main thread.
@@ -25,7 +27,7 @@ def _custom_abort_callback() -> NoReturn:
     Raises:
         SystemExit: Exit the current thread silently.
     """
-    rich.print("[bold red]Script interrupted with TAB key[/]")
+    rich.print(f"[bold red]Script interrupted with {ABORT_KEY.upper()} key[/]")
     # sys.exit() only interrupts keyboard listener thread
     _thread.interrupt_main()
     _thread.exit()
@@ -52,6 +54,6 @@ def register_abort_handlers() -> None:
     """
     signal.signal(signal.SIGINT, _interrupt_handler)
     # Set up custom abort handler
-    keyboard.add_hotkey("tab", _custom_abort_callback)
-    # Suppress pyautogui failsafe since TAB can be used now
+    keyboard.add_hotkey(ABORT_KEY, _custom_abort_callback)
+    # Suppress pyautogui failsafe since ABORT_KEY can be used now
     pyautogui.FAILSAFE = False

@@ -5,8 +5,10 @@ core.py
 The bulk of the pyautogui calls.
 """
 
+import threading
 import time
 
+import keyboard
 import pyautogui
 import rich
 
@@ -16,8 +18,25 @@ from waifu.exceptions import DiscordNotOpenError
 # The sleep calls are to prevent potential latency problems
 # and to not appear suspicious.
 ACTION_COOLDOWN = 0.1  # seconds to wait between actions
-TYPING_COOLDOWN = 0.05  # seconds to wait between character input
+# TYPING_COOLDOWN = 0.05  # seconds to wait between character input
 ROLLING_COOLDOWN = 1.0  # seconds to wait between waifu roll attempts
+
+PAUSE_KEY = "capslock"
+
+# Global flag for if autogui process is paused or not
+paused = False
+
+
+def _wait(delay: float) -> None:
+    """Wait for at least delay seconds, and after paused flag if False.
+
+    Args:
+        delay (float): Minimum time in seconds to wait.
+    """
+    time.sleep(delay)
+    # Block until unpaused
+    while paused:
+        pass
 
 
 def _open_discord(verbose: bool) -> None:
@@ -77,21 +96,21 @@ def _navigate_to_channel(channel: str, verbose: bool) -> None:
 
     # In case search bar was already up for some reason
     pyautogui.hotkey("esc")
-    time.sleep(ACTION_COOLDOWN)
+    _wait(ACTION_COOLDOWN)
 
     # Bring up quick switcher
     pyautogui.hotkey("ctrl", "k")
-    time.sleep(ACTION_COOLDOWN)
+    _wait(ACTION_COOLDOWN)
 
     # Input search and enter
     # Note: sometimes this opens the stupid Quick Switcher help webpage
     # and I don't know why
-    pyautogui.typewrite(search + "\n", interval=TYPING_COOLDOWN)
-    time.sleep(ACTION_COOLDOWN)
+    pyautogui.typewrite(search + "\n")
+    _wait(ACTION_COOLDOWN)
 
     # Focus text area
     pyautogui.hotkey("esc")
-    time.sleep(ACTION_COOLDOWN)
+    _wait(ACTION_COOLDOWN)
     if verbose:
         rich.print(
             "[bright_black]Finished navigating, focused text area, and ready "
@@ -121,13 +140,13 @@ def _start_rolling(command: str, num: int, daily: bool, verbose: bool) -> None:
             rich.print(
                 f"[bright_black]Attempted to roll ({attempt_num}/{num})[/]"
             )
-        time.sleep(ROLLING_COOLDOWN)
+        _wait(ROLLING_COOLDOWN)
     if verbose:
         rich.print("[green]Finished rolling[/]")
 
     if daily:
         pyautogui.typewrite(f"$daily\n")
-        time.sleep(ROLLING_COOLDOWN)
+        _wait(ROLLING_COOLDOWN)
         pyautogui.typewrite(f"$dk\n")
         if verbose:
             rich.print("[green]Finished running daily commands[/]")
@@ -149,6 +168,13 @@ def run_autogui(command: str,
         daily (bool): Arg extracted from parser namespace.
         verbose (bool): Configuration preference.
     """
+    def pause_callback() -> None:
+        global paused
+        paused = not paused
+
+    # Register PAUSE_KEY as a hotkey for pausing/resuming this function
+    keyboard.add_hotkey(PAUSE_KEY, pause_callback)
+
     _open_discord(verbose)
     _navigate_to_channel(channel, verbose)
     _start_rolling(command, num, daily, verbose)
