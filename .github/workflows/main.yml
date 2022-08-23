@@ -7,9 +7,9 @@ jobs:
     - name: Dynamic Badges
       uses: Schneegans/dynamic-badges-action@v1.4.0
       with:
-          auth: ${{ secrets.GIST_SECRET }}
-          gistID: b4b5eb0dba19ef0cadea7eb95bd0d252
-          filename: badge.json
-          label: version
-          message: 0.0.1
-          color: brightgreen
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: b4b5eb0dba19ef0cadea7eb95bd0d252
+        filename: badge.json
+        label: version
+        message: 0.0.1dev
+        color: brightgreen
