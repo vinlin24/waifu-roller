@@ -23,8 +23,19 @@ ROLLING_COOLDOWN = 1.0  # seconds to wait between waifu roll attempts
 
 PAUSE_KEY = "capslock"
 
-# Global flag for if autogui process is paused or not
-paused = False
+
+class Pauser:
+    """Global flag manager for if autogui process is paused or not."""
+    paused = False
+
+    @classmethod
+    def toggle(cls) -> None:
+        """Toggle the internal flag."""
+        cls.paused = not cls.paused
+        if cls.paused:
+            rich.print("[yellow]Program has been paused.[/]")
+        else:
+            rich.print("[yellow]Program resumed.[/]")
 
 
 def _wait(delay: float) -> None:
@@ -35,7 +46,7 @@ def _wait(delay: float) -> None:
     """
     time.sleep(delay)
     # Block until unpaused
-    while paused:
+    while Pauser.paused:
         pass
 
 
@@ -142,14 +153,14 @@ def _start_rolling(command: str, num: int, daily: bool, verbose: bool) -> None:
             )
         _wait(ROLLING_COOLDOWN)
     if verbose:
-        rich.print("[green]Finished rolling[/]")
+        rich.print("[green]Finished rolling.[/]")
 
     if daily:
         pyautogui.typewrite(f"$daily\n")
         _wait(ROLLING_COOLDOWN)
         pyautogui.typewrite(f"$dk\n")
         if verbose:
-            rich.print("[green]Finished running daily commands[/]")
+            rich.print("[green]Finished running daily commands.[/]")
 
 
 def run_autogui(command: str,
@@ -168,12 +179,8 @@ def run_autogui(command: str,
         daily (bool): Arg extracted from parser namespace.
         verbose (bool): Configuration preference.
     """
-    def pause_callback() -> None:
-        global paused
-        paused = not paused
-
     # Register PAUSE_KEY as a hotkey for pausing/resuming this function
-    keyboard.add_hotkey(PAUSE_KEY, pause_callback)
+    keyboard.add_hotkey(PAUSE_KEY, Pauser.toggle)
 
     _open_discord(verbose)
     _navigate_to_channel(channel, verbose)
