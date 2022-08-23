@@ -85,19 +85,21 @@ def update_init(meta: JSONData) -> None:
 
     # Match the line that __version__ is assigned on
     version_finder = re.compile(r"^__version__ ?= ?.*$", re.MULTILINE)
+
     with open(PACKAGE_INIT_PATH, "rt+") as fp:
         content = fp.read()
         match = version_finder.search(content)
+
         # __version__ isn't assigned yet, append the line
         if match is None:
             fp.write(updated_line)
-            return
         # Otherwise replace that line
-        start, end = match.start(), match.end()
-        updated_content = content[:start] + updated_line + content[end:]
-        fp.truncate(0)
-        fp.seek(0)
-        fp.write(updated_content)
+        else:
+            start, end = match.start(), match.end()
+            updated_content = content[:start] + updated_line + content[end:]
+            fp.truncate(0)
+            fp.seek(0)
+            fp.write(updated_content)
 
     print(f"\tINFO: Successfully updated {PACKAGE_INIT_PATH}")
 
@@ -105,8 +107,7 @@ def update_init(meta: JSONData) -> None:
 def main() -> None:
     """Main driver function."""
     # Load JSON metadata
-    json_path = Path(METADATA_JSON_PATH)
-    with open(json_path, "rt") as fp:
+    with open(METADATA_JSON_PATH, "rt") as fp:
         meta = json.load(fp)
 
     # Run updaters
