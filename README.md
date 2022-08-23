@@ -40,9 +40,10 @@ You can also omit arguments and opt to use the default values set in the [config
 ```
 $ waifu
 ```
-As usual, use the help flag for a full list of arguments:
+As usual, use the help flag for a full list of arguments, or use the config flag to get the full path to your [configuration file](#configuration).
 ```
 $ waifu --help
+$ waifu --config
 ```
 
 ### Command Reference
@@ -54,32 +55,35 @@ $ waifu --help
 | -n/--num NUM         | option (1 arg) | Number of times to roll in this session. Should be nonnegative.                                                                   | 10           |
 | -d/--daily           | option (flag)  | Flag specifying whether the daily Mudae commands, $daily and $dailykakera, should be run in addition to the rolling this session. |              |
 
-> :hammer: Todo: Update this reference every time a new command feature is added.
+> :hammer: Developer Todo: Update this reference every time a new command feature is added.
 
 You can also use the following flags to display helpful information instead of rolling:
 
-| Flag         | Description                          |
-| ------------ | ------------------------------------ |
-| -h/--help    | Display help message.                |
-| -v/--version | Display version of installed script. |
-| --config     | Display path of configuration file.  |
+| Flag         | Description                                          |
+| ------------ | ---------------------------------------------------- |
+| -h/--help    | Display help message and ignore all other arguments. |
+| -v/--version | Display version of installed script.                 |
+| --config     | Display path of configuration file.                  |
 
 ### Hotkeys
 
-This program uses the [keyboard](https://github.com/boppreh/keyboard) module to implement hotkeys for convenience. At the moment, they aren't configurable and most likely won't be because it wouldn't make much sense.
+This program uses the [keyboard](https://github.com/boppreh/keyboard) module to implement hotkeys for convenience. At the moment, they aren't configurable and most likely won't be because it wouldn't make much sense to have character or control keys interfere with PyAutoGUI's key-sending.
 
-| Hotkey   | Description                                                                                                  |
-| -------- | ------------------------------------------------------------------------------------------------------------ |
-| ESC      | Abort script by sending SIGINT to the program.                                                               |
-| CAPSLOCK | Pause/resume rolling. This is useful for if you want to be able to claim a spawned character or kakera drop. |
+| Hotkey   | Description                                                                                                                                                                                                                        |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ESC      | Abort script by sending SIGINT to the program. Also handy to use if the [revert-window](#configuration-reference) preference is set, which gives a short window of delay if you choose to stay on Discord to react to a roll, etc. |
+| CAPSLOCK | Pause/resume rolling. This is useful if you want to stop to claim a spawned character or kakera drop in the middle of a rolling session.                                                                                           |
 
 ## Configuration
 
-On first run, the script will try to initialize a configuration file for you at `~/.config/waifu-roller/config.yaml`. You can edit the program preferences here.
+> :mega: **Your configuration file is here:
+> `~/.config/waifu-roller/config.yaml`**
+
+On first run, the script will try to initialize a configuration file for you at the above path. Default values and helpful comments are provided in the document, but you can refer to the reference below for detailed descriptions.
 
 ### Configuration Reference
 
-> :hammer: Todo: Update this schema every time a new configuration feature is added.
+> :hammer: Developer Todo: Update this schema every time a new configuration feature is added.
 
 | Field                   | Type    | Description                                                                                                                                           | Default      |
 | ----------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
@@ -92,12 +96,9 @@ On first run, the script will try to initialize a configuration file for you at 
 
 ## Limitations
 
-This project is still incomplete, and as of now, it has only been tested on my local PC, which is a Windows 11 64-bit system.
+As of now, the builds have only been tested on my local PC, which is a Windows 11 64-bit system.
 
-Missing (but planned) features:
-- [x] Validating command line arguments instead of just the values in the configuration file
-- [ ] Option for returning to the last active window after script is complete
-- [x] Including instructions on where the configuration file is and how to edit it
-- [ ] Binary distributions that do not require Python installed on the user's machine
-- [x] Hotkey to pause and resume the script (to make claiming a character or kakera drop easier) in addition to the existing kill key (`ESC` at the moment)
-- [ ] (:unamused: might give up on this one) Option to start the Discord desktop application if it is not already open. I tried implementing this already but it will make cross-platform coding much more challenging (differing Discord.exe locations and startfile protocols) and has an obscure problem I couldn't fix: right after startup, Ctrl+K, then typing in the channel name, sending the ENTER key causes the stupid [Learn more](https://support.discord.com/hc/en-us/articles/115000070311) link on the popup to enter focus and open the webpage
+If you want to simulate my virtual environment, you can use the provided [requirements.txt](requirements.txt) after installing the wheel file:
+```
+(.venv) python -m pip install -r requirements.txt
+```

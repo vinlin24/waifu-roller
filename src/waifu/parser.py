@@ -103,7 +103,7 @@ class Parser(ArgumentParser):
             the defaults dict, including missing keys, incorrect data
             types, bad argument range or characters, etc.
         """
-        super().__init__(description="Roll waifus on Discord")
+        super().__init__(description="Roll waifus on Discord!")
         self._verbose = verbose
 
         # VALIDATE DEFAULTS
@@ -154,7 +154,7 @@ class Parser(ArgumentParser):
         # This one is not configurable
         self.add_argument("-d", "--daily",
                           action="store_true",
-                          help=NUM_HELP)
+                          help=DAILY_HELP)
 
         # Info arguments
         # I opted out of using action="version" to avoid duplicate tips
