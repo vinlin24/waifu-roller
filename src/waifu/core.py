@@ -14,11 +14,11 @@ import rich
 from waifu.abort import ABORT_KEY
 from waifu.exceptions import DiscordNotOpenError
 
-# todo: Make configurable later
+# todo: Make configurable later? maybe not
 # The sleep calls are to prevent potential latency problems
 # and to not appear suspicious.
 ACTION_COOLDOWN = 0.1  # seconds to wait between actions
-# TYPING_COOLDOWN = 0.05  # seconds to wait between character input
+TYPING_COOLDOWN = 0.05  # seconds to wait between character input
 ROLLING_COOLDOWN = 1.0  # seconds to wait between waifu roll attempts
 
 PAUSE_KEY = "capslock"
@@ -117,7 +117,7 @@ def _navigate_to_channel(channel: str, verbose: bool) -> None:
     # Input search and enter
     # Note: sometimes this opens the stupid Quick Switcher help webpage
     # and I don't know why
-    pyautogui.typewrite(search + "\n")
+    pyautogui.typewrite(search + "\n", interval=TYPING_COOLDOWN)
     _wait(ACTION_COOLDOWN)
 
     # Focus text area
