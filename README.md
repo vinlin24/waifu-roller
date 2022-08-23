@@ -10,7 +10,7 @@
 
 Suppose you're in the zone coding, but it's a new hour and you can roll for waifus again. Before you'd switch to Discord, find the channel, and brainlessly spam enter `$wa` or something. Now you can start the whole rolling sequence right from the command line:
 ```
-$ waifu -c waifu-spam -n 10
+waifu -c waifu-spam -n 10
 ```
 
 > :mega: **No asking for user tokens, no Discord self-botting, no automatic claiming or sniping.** This project uses [PyAutoGUI](https://pypi.org/project/PyAutoGUI/) to automate the process of switching to the app, navigating to the channel, and entering commands. This silly script is intended to just free up your hands a little while you watch the rolls go by.
@@ -21,29 +21,29 @@ $ waifu -c waifu-spam -n 10
 
 Download the desired wheel file `waifu_roller-x.y.z-py3-none-any.whl` from the [`dist`](dist/) folder and install it with pip, preferably in a [virtual environment](https://docs.python.org/3/tutorial/venv.html):
 ```
-(.venv) $ python -m pip install path/to/waifu_roller-x.y.z-py3-none-any.whl
+python -m pip install path/to/waifu_roller-x.y.z-py3-none-any.whl
 ```
 You can verify that it's installed by running:
 ```
-(.venv) $ python -m pip show waifu-roller
+python -m pip show waifu-roller
 ```
 
 ## Usage
 
 The CLI command is `waifu`:
 ```
-$ waifu wa -c waifu-spam -n 10 -d
+waifu wa -c waifu-spam -n 10 -d
 ```
 This example rolls the Mudae command $wa 10 times in the channel named waifu-spam. The optional -d flag appends the daily commands $dk and $daily after the rolling session.
 
 You can also omit arguments and opt to use the default values set in the [config.yaml](#configuration) file. This could be useful if you roll most commonly in a specific channel on a specific server:
 ```
-$ waifu
+waifu
 ```
 As usual, use the help flag for a full list of arguments, or use the config flag to get the full path to your [configuration file](#configuration):
 ```
-$ waifu --help
-$ waifu --config
+waifu --help
+waifu --config
 ```
 
 ### Command Reference
@@ -85,20 +85,47 @@ On first run, the script will try to initialize a configuration file for you at 
 
 > :hammer: Developer Todo: Update this schema every time a new configuration feature is added.
 
-| Field                   | Type    | Description                                                                                                                                           | Default      |
-| ----------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| verbose                 | boolean | Program verbosity level, and include config file path tip on --help and command error.                                                                | true         |
-| revert-window           | boolean | Whether to return to the window from which script was called after rolling is completed. Waits for a short delay first. ESC aborting can cancel this. | false        |
-| defaults                | mapping | Values to use when command line arguments are omitted.                                                                                                |              |
-| defaults.mudae-command  | string  | Default value for the command positional arg.                                                                                                         | null (unset) |
-| defaults.target-channel | string  | Default value for the -c/--channel option.                                                                                                            | null (unset) |
-| defaults.num-rolls      | int     | Default value for the -n/--num option.                                                                                                                | null (unset) |
+| Field                   | Type    | Description                                                                                                                                                                                                  | Default      |
+| ----------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
+| verbose                 | boolean | Program verbosity level, and include config file path tip on --help and command error.                                                                                                                       | true         |
+| revert-window           | boolean | Whether to return to the window from which script was called after rolling is completed. Waits for a short delay first. In case you want to stay on Discord, ESC aborting and TAB pausing still have effect. | false        |
+| keep-failsafe           | boolean | Whether to keep PyAutoGUI's fail-safe mechanism, where moving your mouse to a corner of the screen terminates the program.                                                                                   | true         |  |
+| defaults                | mapping | Values to use when command line arguments are omitted.                                                                                                                                                       |              |
+| defaults.mudae-command  | string  | Default value for the command positional arg.                                                                                                                                                                | null (unset) |
+| defaults.target-channel | string  | Default value for the -c/--channel option.                                                                                                                                                                   | null (unset) |
+| defaults.num-rolls      | int     | Default value for the -n/--num option.                                                                                                                                                                       | null (unset) |
 
-## Limitations
+## Development
 
 As of now, the builds have only been tested on my local PC, which is a Windows 11 64-bit system.
 
 If you want to simulate my virtual environment, you can use the provided [requirements.txt](requirements.txt) after installing the wheel file:
 ```
-(.venv) $ python -m pip install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
+
+## Todo
+
+A tentative list of upcoming features (:bulb:) and implementation changes (:wrench:).
+
+- [ ] :bulb: Support binary distributions that don't require the user to have Python installed.
+- [ ] :bulb: Make distribution and installation instructions more intuitive.
+- [ ] :bulb: Include update script in distribution. Remember to properly handle possibly existing `config.yaml`s.
+- [ ] :bulb: Stop exposing `ConfigError`s and `CommandError`s and define more graceful output.
+- [ ] :wrench: Figure out a better alternative to the the ENTER listener when prompting confirmation since this leaves an awkward newline at script termination.
+- [ ] :wrench: Clean up the `parse_args` process and make better use of `argparse`'s error handling functionality, or migrate to other CLI libraries altogether.
+- [ ] :wrench: Enhance [build.ps1](build/build.ps1) to clean up even upon error, such as removing the generated `*.egg-info` directories. Also maybe make it report how long the build takes since they take quite a while lol.
+- [ ] :wrench: Maybe use environment variables instead of [meta.json](build/meta.json) to maintain version string since using [update.py](build/update.py) to modify 3 places at once seems like a massive code smell.
+- [ ] :wrench: Maybe migrate from [PyYAML](https://pyyaml.org/) to [ramuel.yaml](https://pypi.org/project/ruamel.yaml/).
+- [ ] :wrench: Use [rich logging](https://rich.readthedocs.io/en/stable/logging.html) instead of `rich.print` to fix the pervasive `if verbose:` lines.
+
+## Change Log
+
+![0.0.1](https://img.shields.io/badge/version-0.0.1-brightgreen)
+
+- Initial distribution.
+
+![0.0.2](https://img.shields.io/badge/version-0.0.2-brightgreen)
+
+- Make the pause hotkey CAPSLOCK have effect during the [revert-window](#configuration-reference) delay as well (originally only the abort key ESC had effect).
+- Add new configuration preference [keep-failsafe](#configuration-reference).

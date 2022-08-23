@@ -33,13 +33,12 @@ def config_callback() -> None:
 
 def main() -> None:
     """Main driver function."""
-    # Set up graceful exits
+    # For debugging mostly, todo: cover up exceptions later
     rich.traceback.install(
         # Keep the traceback compact and tidy
         extra_lines=1,
         max_frames=1
     )
-    register_abort_handlers()
 
     # Load and validate config
     config = load_config()
@@ -47,7 +46,11 @@ def main() -> None:
     # Unpack validated config options
     verbose: bool = config["verbose"]
     revert: bool = config["revert-window"]
+    failsafe: bool = config["keep-failsafe"]
     defaults: dict = config["defaults"]
+
+    # Set up graceful exits
+    register_abort_handlers(failsafe)
 
     # Parse command line arguments
     parser = Parser(defaults, verbose)

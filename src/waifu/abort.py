@@ -47,13 +47,16 @@ def _interrupt_handler(sig: int, frame: FrameType | None) -> NoReturn:
     sys.exit()
 
 
-def register_abort_handlers() -> None:
+def register_abort_handlers(failsafe: bool) -> None:
     """Set up signal and hotkey listeners for program abortion.
+
+    Args:
+        failsafe (bool): Configuration preference.
 
     Interface function to be called from main process.
     """
     signal.signal(signal.SIGINT, _interrupt_handler)
     # Set up custom abort handler
     keyboard.add_hotkey(ABORT_KEY, _custom_abort_callback)
-    # Suppress pyautogui failsafe since ABORT_KEY can be used now
-    pyautogui.FAILSAFE = False
+    # Suppress pyautogui failsafe based on config
+    pyautogui.FAILSAFE = failsafe

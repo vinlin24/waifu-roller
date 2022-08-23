@@ -5,6 +5,7 @@ core.py
 The bulk of the pyautogui calls.
 """
 
+import signal
 import time
 
 import keyboard
@@ -183,12 +184,23 @@ def _revert_window(win: pyautogui.Window, verbose: bool) -> None:
             "to react to a Mudae message or review your rolls."
             "[/]"
         )
-    time.sleep(REVERT_WINDOW_DELAY)
+    _wait(REVERT_WINDOW_DELAY)
     win.activate()
     if verbose:
         rich.print(
             f"[bright_black]Returned focus to window '{win.title}'"
         )
+
+
+def _raise_corner_abort() -> None:
+    """Customize behavior of pyautogui.FailSafeException."""
+    rich.print(
+        "\n[bold red]"
+        "Fail-safe triggered from mouse moving to a corner of the screen.[/]\n"
+        "[TIP] To disable this fail-safe, you can set the [blue]keep-failsafe"
+        "[/] option to [red]false[/] in your configuration file.\n"
+    )
+    signal.raise_signal(signal.SIGINT)
 
 
 def run_autogui(command: str,
@@ -212,12 +224,15 @@ def run_autogui(command: str,
     # Register PAUSE_KEY as a hotkey for pausing/resuming this function
     keyboard.add_hotkey(PAUSE_KEY, _Pauser.toggle)
 
-    caller_win = pyautogui.getActiveWindow()
+    try:
+        caller_win = pyautogui.getActiveWindow()
 
-    _open_discord(verbose)
-    _navigate_to_channel(channel, verbose)
-    _start_rolling(command, num, daily, verbose)
+        _open_discord(verbose)
+        _navigate_to_channel(channel, verbose)
+        _start_rolling(command, num, daily, verbose)
 
-    # Restore window script was called from if configured
-    if revert and caller_win is not None:
-        _revert_window(caller_win, verbose)
+        # Restore window script was called from if configured
+        if revert and caller_win is not None:
+            _revert_window(caller_win, verbose)
+    except pyautogui.FailSafeException:
+        _raise_corner_abort()

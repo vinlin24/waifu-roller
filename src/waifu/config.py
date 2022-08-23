@@ -19,6 +19,7 @@ from waifu.exceptions import (ConfigFileError, ConfigFormatError,
 CONFIG_FILE_SCHEMA: dict[str, type] = {
     "verbose": bool,
     "revert-window": bool,
+    "keep-failsafe": bool,
     "defaults": dict  # subkeys validated in parser.Parser
 }
 
@@ -28,6 +29,8 @@ CONFIG_FILE_TEMPLATE: str = """\
 verbose: true
 # After completion, return to the window that was active at startup
 revert-window: false
+# Moving your mouse to a corner of the screen terminates script
+keep-failsafe: true
 
 # Values to use when command line arguments are omitted
 defaults:

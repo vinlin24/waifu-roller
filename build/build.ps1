@@ -123,6 +123,8 @@ function New-ProjectBuild {
     Write-CustomOutput "Updated $requirementsPath with state of current venv" -Level "INFO"
 
     Write-Host "Finished executing $SCRIPT_NAME, no errors detected." -ForegroundColor Green
+    # Added 0.0.2
+    Write-Host "Remember to update documentation in README.md before pushing!" -ForegroundColor Yellow
 }
 
 <# MAIN PROCESS HERE #>
@@ -135,10 +137,10 @@ Read-Confirmation
 if ($UpdateMetaOnly) {
     Update-ProjectMeta
     if ($LASTEXITCODE -ne 0) {
-        Write-Host "Finished executing '$SCRIPT_NAME -UpdateMetaOnly', no errors detected." -ForegroundColor Green
+        Write-Host "Finished executing '$SCRIPT_NAME -UpdateMetaOnly', errors detected." -ForegroundColor Red
     }
     else {
-        Write-Host "Finished executing '$SCRIPT_NAME -UpdateMetaOnly', errors detected." -ForegroundColor Red
+        Write-Host "Finished executing '$SCRIPT_NAME -UpdateMetaOnly', no errors detected." -ForegroundColor Green
     }
     exit
 }
