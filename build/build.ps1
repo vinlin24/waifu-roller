@@ -11,6 +11,11 @@ venv for development testing, but it ASSUMES that the generated wheel
 with the highest version substring is the one just built.
 #>
 
+param (
+    [Parameter()]
+    [switch]$UpdateMetaOnly
+)
+
 $SCRIPT_NAME = "build.ps1"
 $BUILD_LOG_PATH = ".\build.log"
 
@@ -28,8 +33,16 @@ function Assert-ScriptConditions {
 }
 
 function Read-Confirmation {
-    # Reminder and ask for confirmation
-    Write-Host "About to build project source. Did you remember to update the version string in BOTH src/waifu/__init__.py and src/setup.cfg? (y/N) " -NoNewline -ForegroundColor Yellow
+    # Reminder and ask for confirmation based on script arg
+
+    if ($UpdateMetaOnly) {
+        $reminder = "About to update project metadata."
+    }
+    else {
+        $reminder = "About to build project source."
+    }
+    $reminder += " Did you remember to update the JSON metadata file in build/? (y/N) "
+    Write-Host $reminder -NoNewline -ForegroundColor Yellow
     $confirmation = Read-Host
     # Learning note: PS -eq/-ne is case-insensitive, -ceq/-cne is case-sensitive
     if ($confirmation -ne "y") {
@@ -55,21 +68,40 @@ function Exit-ThisScript {
     exit
 }
 
-function New-ProjectBuild {
-    # Build the project source
-    $srcDir = "..\src"
-    python -m build $srcDir
+function Update-ProjectMeta {
+    # Automate pre-push checklist
 
-    # Build failed or path is wrong, abort immediately
-    # Learning note: Join-Path always returns a string instead of FileInfo
-    $generatedDir = Join-Path -Path $srcDir -ChildPath "dist"
-    if (-Not (Test-Path $generatedDir)) {
-        Write-CustomOutput "Something went wrong, can't find the generated dist directory, aborted." -Level "ERROR"
+    Write-CustomOutput "Running pre-push checklist..." -Level "INFO"
+
+    # Update appropriate files using meta.json content
+    $updaterPath = ".\update.py"
+    python $updaterPath
+    if ($LASTEXITCODE -ne 0) {
+        Write-CustomOutput "An error occurred executing $updaterPath" -Level "ERROR"
+        return
+    }
+    else {
+        Write-CustomOutput "Finished executing update.py" -Level "INFO"
+    }
+}
+
+function New-ProjectBuild {
+    # Main process of building and cleaning up project source
+    Write-Host "Running $SCRIPT_NAME..." -ForegroundColor Green
+
+    # Pre-push checklist things, like updating version strings project-wide
+    Update-ProjectMeta
+    if ($LASTEXITCODE -ne 0) {
         Exit-ThisScript
     }
 
+    # Build the project source
+    $srcDir = "..\src"
+    $distDir = Join-Path -Path (Get-Location) -ChildPath "..\dist"
+    python -m build $srcDir --outdir $distDir
+
     # The x.y.z version part of the names orders them, use most updated wheel
-    $wheelFiles = (Get-ChildItem -Path $generatedDir -Filter "*.whl")
+    $wheelFiles = (Get-ChildItem -Path $distDir -Filter "*.whl")
     if ($wheelFiles.count -eq 0) {
         Write-CustomOutput "Something went wrong, can't find a whl file, aborted." -Level "ERROR"
         Exit-ThisScript
@@ -80,30 +112,37 @@ function New-ProjectBuild {
     pip install $recentWheel.FullName --force-reinstall
     Write-CustomOutput "Finished attempting to pip install $recentWheel" -Level "INFO"
 
-    # CLEANUP
-
-    # Move the dist folder contents to the project level dist
-    $generatedDirContents = Join-Path -Path $generatedDir -ChildPath "*"
-    $rootDistDir = Join-Path -Path (Get-Location) -ChildPath "..\dist"
-    Move-Item -Path $generatedDirContents -Destination $rootDistDir -Force
-
-    # Delete the now empty dist folder inside build/
-    Remove-Item -Path $generatedDir
-
-    # Delete the generated .egg-info directory as well
+    # CLEANUP: Delete the generated .egg-info directory
     $eggDir = Join-Path -Path $srcDir -ChildPath "*.egg-info"
     Remove-Item -Path $eggDir -Recurse
-    
-    Write-CustomOutput "Finished cleaning up generated dist and egg-info directories" -Level "INFO"
+    Write-CustomOutput "Removed generated egg-info directory" -Level "INFO"
+
+    # Update requirements.txt
+    $requirementsPath = "..\requirements.txt"
+    pip freeze > $requirementsPath
+    Write-CustomOutput "Updated $requirementsPath with state of current venv" -Level "INFO"
+
+    Write-Host "Finished executing $SCRIPT_NAME, no errors detected." -ForegroundColor Green
 }
+
+<# MAIN PROCESS HERE #>
 
 # Check these first
 Assert-ScriptConditions
 Read-Confirmation
 
-Write-Host "Running $SCRIPT_NAME..." -ForegroundColor Green
+# Run pre-push checklist things only if specified
+if ($UpdateMetaOnly) {
+    Update-ProjectMeta
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "Finished executing '$SCRIPT_NAME -UpdateMetaOnly', no errors detected." -ForegroundColor Green
+    }
+    else {
+        Write-Host "Finished executing '$SCRIPT_NAME -UpdateMetaOnly', errors detected." -ForegroundColor Red
+    }
+    exit
+}
 
-# Output to both console and log file
+# Otherwise do the full build process
+# Use Tee-Object to output to both console and log file
 New-ProjectBuild | Tee-Object -FilePath $BUILD_LOG_PATH
-
-Write-Host "Finished executing $SCRIPT_NAME!" -ForegroundColor Green
