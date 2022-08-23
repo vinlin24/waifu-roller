@@ -47,8 +47,6 @@ $ waifu --help
 
 ### Command Reference
 
-
-
 | Argument             | Type           | Description                                                                                                                       | Example      |
 | -------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------ |
 | command              | positional     | Name of the Mudae command to use to roll for characters. It should be unprefixed (no $, /, etc.).                                 | 'wa'         |
@@ -66,6 +64,14 @@ You can also use the following flags to display helpful information instead of r
 | -v/--version | Display version of installed script. |
 | --config     | Display path of configuration file.  |
 
+### Hotkeys
+
+This program uses the [keyboard](https://github.com/boppreh/keyboard) module to implement hotkeys for convenience. At the moment, they aren't configurable and most likely won't be because it wouldn't make much sense.
+
+| Hotkey   | Description                                                                                                  |
+| -------- | ------------------------------------------------------------------------------------------------------------ |
+| ESC      | Abort script by sending SIGINT to the program.                                                               |
+| CAPSLOCK | Pause/resume rolling. This is useful for if you want to be able to claim a spawned character or kakera drop. |
 
 ## Configuration
 
@@ -88,10 +94,9 @@ On first run, the script will try to initialize a configuration file for you at 
 This project is still incomplete, and as of now, it has only been tested on my local PC, which is a Windows 11 64-bit system.
 
 Missing (but planned) features:
-- [ ] Configurable delays in the PyAutoGUI sequences
 - [x] Validating command line arguments instead of just the values in the configuration file
 - [ ] Option for returning to the last active window after script is complete
 - [x] Including instructions on where the configuration file is and how to edit it
 - [ ] Binary distributions that do not require Python installed on the user's machine
-- [ ] Hotkey to pause and resume the script (to make claiming a character or kakera drop easier) in addition to the existing kill key (`ESC` at the moment)
+- [x] Hotkey to pause and resume the script (to make claiming a character or kakera drop easier) in addition to the existing kill key (`ESC` at the moment)
 - [ ] (:unamused: might give up on this one) Option to start the Discord desktop application if it is not already open. I tried implementing this already but it will make cross-platform coding much more challenging (differing Discord.exe locations and startfile protocols) and has an obscure problem I couldn't fix: right after startup, Ctrl+K, then typing in the channel name, sending the ENTER key causes the stupid [Learn more](https://support.discord.com/hc/en-us/articles/115000070311) link on the popup to enter focus and open the webpage
