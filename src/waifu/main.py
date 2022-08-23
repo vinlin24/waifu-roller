@@ -46,6 +46,7 @@ def main() -> None:
 
     # Unpack validated config options
     verbose: bool = config["verbose"]
+    revert: bool = config["revert-window"]
     defaults: dict = config["defaults"]
 
     # Parse command line arguments
@@ -88,7 +89,7 @@ def main() -> None:
     keyboard.wait("enter")
 
     # PyAutoGUI sequences
-    run_autogui(command, channel, num, daily, verbose)
+    run_autogui(command, channel, num, daily, verbose, revert)
 
     # All went well!
     rich.print("[green]Script terminated successfully.[/]")

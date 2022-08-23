@@ -14,15 +14,20 @@ import yaml
 from waifu.exceptions import (ConfigFileError, ConfigFormatError,
                               get_user_config_path)
 
+# Remember to update both these constants when a new field is added
+
 CONFIG_FILE_SCHEMA: dict[str, type] = {
     "verbose": bool,
+    "revert-window": bool,
     "defaults": dict  # subkeys validated in parser.Parser
 }
 
 CONFIG_FILE_TEMPLATE: str = """\
 ---
-# true (default) or false
+# Program verbosity setting
 verbose: true
+# After completion, return to the window that was active at startup
+revert-window: false
 
 # Values to use when command line arguments are omitted
 defaults:
@@ -100,9 +105,6 @@ def load_config() -> ConfigDict:
     """Load configuration options from YAML file.
 
     Interface function to be called from main process.
-
-    Args:
-        config_path (str): Path to configuration file.
 
     Raises:
         ConfigFormatError: There was a formatting error in the content

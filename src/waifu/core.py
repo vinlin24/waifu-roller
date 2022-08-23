@@ -5,13 +5,13 @@ core.py
 The bulk of the pyautogui calls.
 """
 
-import threading
 import time
 
 import keyboard
 import pyautogui
 import rich
 
+from waifu.abort import ABORT_KEY
 from waifu.exceptions import DiscordNotOpenError
 
 # todo: Make configurable later
@@ -22,9 +22,10 @@ ACTION_COOLDOWN = 0.1  # seconds to wait between actions
 ROLLING_COOLDOWN = 1.0  # seconds to wait between waifu roll attempts
 
 PAUSE_KEY = "capslock"
+REVERT_WINDOW_DELAY = 3.0  # seconds to wait before reverting window
 
 
-class Pauser:
+class _Pauser:
     """Global flag manager for if autogui process is paused or not."""
     paused = False
 
@@ -39,14 +40,14 @@ class Pauser:
 
 
 def _wait(delay: float) -> None:
-    """Wait for at least delay seconds, and after paused flag if False.
+    """Wait for at least delay seconds, and after paused flag is False.
 
     Args:
         delay (float): Minimum time in seconds to wait.
     """
     time.sleep(delay)
     # Block until unpaused
-    while Pauser.paused:
+    while _Pauser.paused:
         pass
 
 
@@ -163,11 +164,39 @@ def _start_rolling(command: str, num: int, daily: bool, verbose: bool) -> None:
             rich.print("[green]Finished running daily commands.[/]")
 
 
+def _revert_window(win: pyautogui.Window, verbose: bool) -> None:
+    """Restore focus to the window script was called from.
+
+    Args:
+        win (pyautogui.Window): The window to restore focus to.
+        verbose (bool): Configuration preference.
+    """
+    if verbose:
+        rich.print(
+            "[bright_black]"
+            f"Waiting for a delay of {REVERT_WINDOW_DELAY} seconds "
+            f"before restoring your window '{win.title}'"
+            "[/]\n"
+            "[yellow]"
+            "[TIP] You can cancel the window focus change with the "
+            f"{ABORT_KEY.upper()} hotkey during this delay if you want "
+            "to react to a Mudae message or review your rolls."
+            "[/]"
+        )
+    time.sleep(REVERT_WINDOW_DELAY)
+    win.activate()
+    if verbose:
+        rich.print(
+            f"[bright_black]Returned focus to window '{win.title}'"
+        )
+
+
 def run_autogui(command: str,
                 channel: str,
                 num: int,
                 daily: bool,
-                verbose: bool) -> None:
+                verbose: bool,
+                revert: bool) -> None:
     """Bundle PyAutoGUI actions used to accomplish script.
 
     Interface function to be called from main process.
@@ -178,10 +207,17 @@ def run_autogui(command: str,
         num (int): Arg extracted from parser namespace.
         daily (bool): Arg extracted from parser namespace.
         verbose (bool): Configuration preference.
+        revert (bool): Configuration preference.
     """
     # Register PAUSE_KEY as a hotkey for pausing/resuming this function
-    keyboard.add_hotkey(PAUSE_KEY, Pauser.toggle)
+    keyboard.add_hotkey(PAUSE_KEY, _Pauser.toggle)
+
+    caller_win = pyautogui.getActiveWindow()
 
     _open_discord(verbose)
     _navigate_to_channel(channel, verbose)
     _start_rolling(command, num, daily, verbose)
+
+    # Restore window script was called from if configured
+    if revert and caller_win is not None:
+        _revert_window(caller_win, verbose)
