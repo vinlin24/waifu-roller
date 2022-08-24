@@ -10,7 +10,7 @@
 
 Suppose you're in the zone coding, but it's a new hour and you can roll for waifus again. Before you'd switch to Discord, find the channel, and brainlessly spam enter `$wa` or something. Now you can start the whole rolling sequence right from the command line:
 ```
-waifu -c waifu-spam -n 10
+waifu wa -c waifu-spam -n 10 -d
 ```
 
 > :mega: **No asking for user tokens, no Discord self-botting, no automatic claiming or sniping.** This project uses [PyAutoGUI](https://pypi.org/project/PyAutoGUI/) to automate the process of switching to the app, navigating to the channel, and entering commands. This silly script is intended to just free up your hands a little while you watch the rolls go by.
@@ -122,7 +122,7 @@ A tentative list of upcoming features (:bulb:) and implementation changes (:wren
 
 ## Change Log
 
-A :wrench: indicates that a change in implementation detail or workflow and does not have a visible effect on the distribution for this version.
+A :wrench: indicates a change in implementation detail or workflow and does not have a visible effect on the distribution for this version.
 
 ![0.0.1](https://img.shields.io/badge/version-0.0.1-brightgreen)
 
