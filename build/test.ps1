@@ -3,13 +3,22 @@ Script for entering a test environment for testing a distribution of
 the project.
 Usage: At the project <root>/build/ directory.
 ```
-PS> ./test 0.0.1
+PS> ./test 0.0.1  # Install build version 0.0.1 in a clean venv
+PS> ./test -Clean  # Just activate and clean the venv
+PS> ./test -Activate  # Just activate the venv
 ```
 #>
 
 param (
+    <# Version string e.g. 0.0.1, default most recent #>
     [Parameter()]
-    [string]$Version
+    [string]$Version,
+    <# Don't install any build, just activate and clean the venv #>
+    [Parameter()]
+    [switch]$Clean,
+    <# Just activate the venv, nothing else #>
+    [Parameter()]
+    [switch]$Activate
 )
 
 $SCRIPT_NAME = "test.ps1"
@@ -118,11 +127,28 @@ function Install-BuildVersion {
     finally { Write-CompletionStatus }
 }
 
+<# Write message at end of successful termination #>
+function Write-Finish {
+    Write-Host "Finished running $SCRIPT_NAME." -ForegroundColor Yellow
+    exit 0
+}
+
 <# MAIN PROCESS HERE #>
 
-Write-Host "Running $SCRIPT_NAME..." -ForegroundColor Yellow
 Assert-ScriptConditions
+
+Write-Host "Running $SCRIPT_NAME..." -ForegroundColor Yellow
+
 Start-VirtualEnv
+
+# Caller wants to activate venv and nothing else
+if ($Activate) { Write-Finish }
+
 Assert-VenvConditions
+
+# Caller wants to clean the venv (leaves caller in activated venv)
+if ($Clean) { Write-Finish }
+
 Install-BuildVersion
-Write-Host "Finished running $SCRIPT_NAME." -ForegroundColor Yellow
+
+Write-Finish
