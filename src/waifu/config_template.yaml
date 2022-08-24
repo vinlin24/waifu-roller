@@ -1,0 +1,16 @@
+---
+# Program verbosity setting
+verbose: true
+# After completion, return to the window that was active at startup
+revert-window: false
+# Moving your mouse to a corner of the screen terminates script
+keep-failsafe: true
+
+# Values to use when command line arguments are omitted
+defaults:
+  # Name of command (no $ or / prefix)
+  mudae-command:
+  # Channel to search for
+  target-channel:
+  # Number of times to send the command
+  num-rolls:

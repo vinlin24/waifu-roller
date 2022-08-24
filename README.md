@@ -116,7 +116,7 @@ A tentative list of upcoming features (:bulb:) and implementation changes (:wren
 - [ ] :wrench: Clean up the `parse_args` process and make better use of `argparse`'s error handling functionality, or migrate to other CLI libraries altogether.
 - [ ] :wrench: Enhance [build.ps1](build/build.ps1) to clean up even upon error, such as removing the generated `*.egg-info` directories. Also maybe make it report how long the build takes since they take quite a while lol.
 - [ ] :wrench: Maybe use environment variables instead of [meta.json](build/meta.json) to maintain version string since using [update.py](build/update.py) to modify 3 places at once seems like a massive code smell.
-- [ ] :wrench: Maybe migrate from [PyYAML](https://pyyaml.org/) to [ramuel.yaml](https://pypi.org/project/ruamel.yaml/).
+- [ ] :wrench: Maybe migrate from [PyYAML](https://pyyaml.org/) to [ruamel.yaml](https://pypi.org/project/ruamel.yaml/).
 - [ ] :wrench: Use [rich logging](https://rich.readthedocs.io/en/stable/logging.html) instead of `rich.print` to fix the pervasive `if verbose:` lines.
 
 ## Change Log

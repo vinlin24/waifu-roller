@@ -19,8 +19,8 @@ param (
 $SCRIPT_NAME = "build.ps1"
 $BUILD_LOG_PATH = ".\build.log"
 
+<# Assert that script is being run at build/ in an activated venv #>
 function Assert-ScriptConditions {
-    # Assert that script is being run at build/ in an activated venv
     if (-Not $env:VIRTUAL_ENV) {
         Write-Host "Script should be run in a virtual environment, aborted." -ForegroundColor Red
         exit
@@ -32,9 +32,8 @@ function Assert-ScriptConditions {
     }
 }
 
+<# Give reminder and ask for confirmation based on script arg #>
 function Read-Confirmation {
-    # Reminder and ask for confirmation based on script arg
-
     if ($UpdateMetaOnly) {
         $reminder = "About to update project metadata."
     }
@@ -51,8 +50,8 @@ function Read-Confirmation {
     }
 }
 
+<# Wrapper for writing log-like outputs #>
 function Write-CustomOutput {
-    # Wrapper for writing log-like outputs
     param (
         [Parameter(Mandatory = $true)]
         [System.Object]$Object,
@@ -62,15 +61,14 @@ function Write-CustomOutput {
     Write-Output "[$SCRIPT_NAME] $($Level): $Object"
 }
 
+<# Exit script and notify console that process couldn't be completed #>
 function Exit-ThisScript {
-    # Exit script and notify console that process couldn't be completed
     Write-Host "Could not complete $SCRIPT_NAME." -ForegroundColor Red
     exit
 }
 
+<# Automate pre-push checklist #>
 function Update-ProjectMeta {
-    # Automate pre-push checklist
-
     Write-CustomOutput "Running pre-push checklist..." -Level "INFO"
 
     # Update appropriate files using meta.json content
@@ -85,11 +83,20 @@ function Update-ProjectMeta {
     }
 }
 
+<# Update requirements.txt with state of current venv #>
+function Update-RequirementsTxt {
+    $requirementsPath = "..\requirements.txt"
+    # 0.0.3: specify encoding so update.py works as expected
+    pip freeze | Out-File -Encoding utf8 $requirementsPath
+    Write-CustomOutput "Updated $requirementsPath with state of current venv" -Level "INFO"
+}
+
+<# Main process of building and cleaning up project source #>
 function New-ProjectBuild {
-    # Main process of building and cleaning up project source
     Write-Host "Running $SCRIPT_NAME..." -ForegroundColor Green
 
     # Pre-push checklist things, like updating version strings project-wide
+    Update-RequirementsTxt
     Update-ProjectMeta
     if ($LASTEXITCODE -ne 0) {
         Exit-ThisScript
@@ -100,14 +107,15 @@ function New-ProjectBuild {
     $distDir = Join-Path -Path (Get-Location) -ChildPath "..\dist"
     python -m build $srcDir --outdir $distDir
 
-    # The x.y.z version part of the names orders them, use most updated wheel
+    # 0.0.3: just use the most recent whl lol wyd, don't care about version string
     $wheelFiles = (Get-ChildItem -Path $distDir -Filter "*.whl")
     if ($wheelFiles.count -eq 0) {
         Write-CustomOutput "Something went wrong, can't find a whl file, aborted." -Level "ERROR"
         Exit-ThisScript
     }
-    $recentWheel = $wheelFiles[-1]  # Assume this was the one just built
-
+    $sortedWheelFiles = ($wheelFiles | Sort-Object -Property { $_.CreationTime })
+    $recentWheel = $sortedWheelFiles[-1]  # This should be the one just built
+    
     # Install the built wheel in the virtual environment
     pip install $recentWheel.FullName --force-reinstall
     Write-CustomOutput "Finished attempting to pip install $recentWheel" -Level "INFO"
@@ -116,11 +124,6 @@ function New-ProjectBuild {
     $eggDir = Join-Path -Path $srcDir -ChildPath "*.egg-info"
     Remove-Item -Path $eggDir -Recurse
     Write-CustomOutput "Removed generated egg-info directory" -Level "INFO"
-
-    # Update requirements.txt
-    $requirementsPath = "..\requirements.txt"
-    pip freeze > $requirementsPath
-    Write-CustomOutput "Updated $requirementsPath with state of current venv" -Level "INFO"
 
     Write-Host "Finished executing $SCRIPT_NAME, no errors detected." -ForegroundColor Green
     # Added 0.0.2
@@ -135,6 +138,7 @@ Read-Confirmation
 
 # Run pre-push checklist things only if specified
 if ($UpdateMetaOnly) {
+    Update-RequirementsTxt
     Update-ProjectMeta
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Finished executing '$SCRIPT_NAME -UpdateMetaOnly', errors detected." -ForegroundColor Red

@@ -11,5 +11,5 @@ jobs:
         gistID: b4b5eb0dba19ef0cadea7eb95bd0d252
         filename: badge.json
         label: version
-        message: 0.0.2
+        message: 0.0.3
         color: brightgreen

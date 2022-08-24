@@ -23,10 +23,12 @@ from typing import Any
 from ruamel.yaml import YAML
 
 # Relative paths from build/ to files
+# Learning note: next time, you can use the __file__ trick
 METADATA_JSON_PATH = Path("./meta.json")
 WORKFLOW_YAML_PATH = Path("../.github/workflows/main.yml")
 SETUP_CFG_PATH = Path("../src/setup.cfg")
 PACKAGE_INIT_PATH = Path("../src/waifu/__init__.py")
+REQUIREMENTS_TXT_PATH = Path("../requirements.txt")
 
 # From main.yml schema
 WORKFLOW_JOB_NAME = "update-badges"
@@ -59,7 +61,7 @@ def update_badge(meta: JSONData) -> None:
     # Dump updated YAML
     yaml.dump(loaded, WORKFLOW_YAML_PATH)
 
-    print(f"\tINFO: Successfully updated {WORKFLOW_YAML_PATH}")
+    print(f"[update.py] INFO: Successfully updated {WORKFLOW_YAML_PATH}")
 
 
 def update_setup(meta: JSONData) -> None:
@@ -76,7 +78,7 @@ def update_setup(meta: JSONData) -> None:
     with open(SETUP_CFG_PATH, "wt") as fp:
         config.write(fp, space_around_delimiters=True)
 
-    print(f"\tINFO: Successfully updated {SETUP_CFG_PATH}")
+    print(f"[update.py] INFO: Successfully updated {SETUP_CFG_PATH}")
 
 
 def update_init(meta: JSONData) -> None:
@@ -92,6 +94,8 @@ def update_init(meta: JSONData) -> None:
 
         # __version__ isn't assigned yet, append the line
         if match is None:
+            # changed 0.0.3: originally you would've overwritten at pos 0 :/
+            fp.seek(0, 2)  # this means 0 byte offset from end of file
             fp.write(updated_line)
         # Otherwise replace that line
         else:
@@ -101,7 +105,25 @@ def update_init(meta: JSONData) -> None:
             fp.seek(0)
             fp.write(updated_content)
 
-    print(f"\tINFO: Successfully updated {PACKAGE_INIT_PATH}")
+    print(f"[update.py] INFO: Successfully updated {PACKAGE_INIT_PATH}")
+
+
+def update_requirements() -> None:
+    """Remove waifu-roller from requirements.txt, if exists."""
+    line_finder = re.compile(r"^waifu-roller.*$", re.MULTILINE)
+
+    with open(REQUIREMENTS_TXT_PATH, "rt+") as fp:
+        content = fp.read()
+        match = line_finder.search(content)
+        if match is not None:
+            start, end = match.start(), match.end()
+            # Need to strip a \n as side effect of multiline matching
+            updated = content[:start].removesuffix("\n") + content[end:]
+            fp.truncate(0)
+            fp.seek(0)
+            fp.write(updated)
+
+    print(f"[update.py] INFO: Successfully updated {REQUIREMENTS_TXT_PATH}")
 
 
 def main() -> None:
@@ -115,6 +137,7 @@ def main() -> None:
     update_badge(meta)
     update_setup(meta)
     update_init(meta)
+    update_requirements()
 
     # Let PS know everything went well
     sys.exit(0)
