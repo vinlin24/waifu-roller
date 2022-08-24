@@ -6,9 +6,6 @@ project <root>/build/ directory.
 ```
 (.venv) PS> ./build
 ```
-NOTE: This script automatically reinstalls the build with pip in the
-venv for development testing, but it ASSUMES that the generated wheel
-with the highest version substring is the one just built.
 #>
 
 param (
@@ -126,6 +123,17 @@ function New-ProjectBuild {
     Write-CustomOutput "Removed generated egg-info directory" -Level "INFO"
 
     Write-Host "Finished executing $SCRIPT_NAME, no errors detected." -ForegroundColor Green
+    # Added 0.0.3
+    Write-Host "The wheel that was attempted to install in your venv is " -NoNewline -ForegroundColor Yellow
+    Write-Host $recentWheel.ToString() -NoNewline
+    Write-Host ". The --version option shows:" -ForegroundColor Yellow
+    try {
+        waifu --version
+        Write-Host "Verify that this is the correct dist." -ForegroundColor Yellow
+    }
+    catch {
+        Write-Host "An error occurred attempting to run 'waifu --version'. Check your src and/or $SCRIPT_NAME." -ForegroundColor Red
+    }
     # Added 0.0.2
     Write-Host "Remember to update documentation in README.md before pushing!" -ForegroundColor Yellow
 }
