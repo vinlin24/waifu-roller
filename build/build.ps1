@@ -15,6 +15,7 @@ param (
 
 $SCRIPT_NAME = "build.ps1"
 $BUILD_LOG_PATH = ".\build.log"
+$TEST_SCRIPT_PATH = ".\test.ps1"
 
 <# Assert that script is being run at build/ in an activated venv #>
 function Assert-ScriptConditions {
@@ -45,6 +46,14 @@ function Read-Confirmation {
         Write-Host "$SCRIPT_NAME canceled." -ForegroundColor Red
         exit
     }
+}
+
+<# 0.0.4: Give option to test build in .test-venv #>
+function Confirm-TestBuild {
+    Write-Host "Would you like to test this build in a fresh virtual environment? (y/N) " -ForegroundColor Yellow
+    $confirmation = Read-Host
+    if ($confirmation -ne "y") { exit }
+    & $TEST_SCRIPT_PATH
 }
 
 <# Wrapper for writing log-like outputs #>
@@ -122,7 +131,6 @@ function New-ProjectBuild {
     Remove-Item -Path $eggDir -Recurse
     Write-CustomOutput "Removed generated egg-info directory" -Level "INFO"
 
-    Write-Host "Finished executing $SCRIPT_NAME, no errors detected." -ForegroundColor Green
     # Added 0.0.3
     Write-Host "The wheel that was attempted to install in your venv is " -NoNewline -ForegroundColor Yellow
     Write-Host $recentWheel.ToString() -NoNewline
@@ -136,6 +144,9 @@ function New-ProjectBuild {
     }
     # Added 0.0.2
     Write-Host "Remember to update documentation in README.md before pushing!" -ForegroundColor Yellow
+    # Added 0.0.4
+    Confirm-TestBuild
+    Write-Host "Finished executing $SCRIPT_NAME." -ForegroundColor Yellow
 }
 
 <# MAIN PROCESS HERE #>
