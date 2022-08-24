@@ -48,12 +48,12 @@ waifu --config
 
 ### Command Reference
 
-| Argument             | Type           | Description                                                                                                                       | Example      |
-| -------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| command              | positional     | Name of the Mudae command to use to roll for characters. It should be unprefixed (no $, /, etc.).                                 | 'wa'         |
-| -c/--channel CHANNEL | option (1 arg) | Query string to submit to the Discord search bar to locate the channel to roll in. It should not contain whitespace.              | 'waifu-spam' |
-| -n/--num NUM         | option (1 arg) | Number of times to roll in this session. Should be nonnegative.                                                                   | 10           |
-| -d/--daily           | option (flag)  | Flag specifying whether the daily Mudae commands, $daily and $dailykakera, should be run in addition to the rolling this session. |              |
+| Argument             | Type           | Description                                                                                                                                                                                                                                                                                                        | Example      |
+| -------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
+| command              | positional     | Name of the Mudae command to use to roll for characters. It should be unprefixed (no $, /, etc.).                                                                                                                                                                                                                  | 'wa'         |
+| -c/--channel CHANNEL | option (1 arg) | Query string to submit to the Discord quick switcher to locate the channel to roll in. It should not contain whitespace. You should try entering this query yourself first with Ctrl+K to make sure it brings up the expected channel. The program has no way of knowing if the correct channel has entered focus. | 'waifu-spam' |
+| -n/--num NUM         | option (1 arg) | Number of times to roll in this session. Should be nonnegative. You can troll and put a massive number, but it's not our fault if you get banned for spam.                                                                                                                                                         | 10           |
+| -d/--daily           | option (flag)  | Flag specifying whether the daily Mudae commands, $daily and $dailykakera, should be run in addition to the rolling this session.                                                                                                                                                                                  |              |
 
 > :hammer: Developer Todo: Update this reference every time a new command feature is added.
 
