@@ -13,12 +13,12 @@ import keyboard
 import rich
 import rich.traceback
 
-from waifu import __version__
-from waifu.abort import ABORT_KEY, register_abort_handlers
-from waifu.config import load_config
-from waifu.core import PAUSE_KEY, run_autogui
-from waifu.exceptions import get_user_config_path
-from waifu.parser import Parser
+from . import __version__
+from .abort import ABORT_KEY, register_abort_handlers
+from .config import load_config
+from .core import PAUSE_KEY, run_autogui
+from .exceptions import get_user_config_path
+from .parser import Parser
 
 
 def version_callback() -> None:

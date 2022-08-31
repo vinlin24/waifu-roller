@@ -12,8 +12,8 @@ import keyboard
 import pyautogui
 import rich
 
-from waifu.abort import ABORT_KEY
-from waifu.exceptions import DiscordNotOpenError
+from .abort import ABORT_KEY
+from .exceptions import DiscordNotOpenError
 
 # todo: Make configurable later? maybe not
 # The sleep calls are to prevent potential latency problems

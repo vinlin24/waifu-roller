@@ -10,8 +10,7 @@ from typing import Any, Sequence
 
 import rich
 
-from waifu.exceptions import (CommandError, ConfigFormatError,
-                              get_config_path_tip)
+from .exceptions import CommandError, ConfigFormatError, get_config_path_tip
 
 DefaultsDict = dict[str, str | int | None]
 """Typing for defaults key in config.yaml."""

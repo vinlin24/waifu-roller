@@ -12,8 +12,8 @@ from typing import Any
 import rich
 import yaml
 
-from waifu.exceptions import (ConfigFileError, ConfigFormatError,
-                              get_user_config_path)
+from .exceptions import (ConfigFileError, ConfigFormatError,
+                         get_user_config_path)
 
 # Updated 0.0.3: Remember to update this when a new field is added
 CONFIG_FILE_SCHEMA: dict[str, type] = {
