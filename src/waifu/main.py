@@ -16,7 +16,7 @@ import rich.traceback
 from waifu import __version__
 from waifu.abort import ABORT_KEY, register_abort_handlers
 from waifu.config import load_config
-from waifu.core import run_autogui
+from waifu.core import PAUSE_KEY, run_autogui
 from waifu.exceptions import get_user_config_path
 from waifu.parser import Parser
 
@@ -73,10 +73,14 @@ def main() -> None:
     if version_flag or config_flag:
         raise SystemExit
 
-    # Display tip now that command is validated
+    # Display tips now that command is validated
     rich.print(
-        "[bold yellow]Note: You can abort the script at any time with the "
+        "[bold yellow]TIP: You can abort the script at any time with the "
         f"{ABORT_KEY.upper()} key[/]"
+    )
+    rich.print(
+        "[bold yellow]TIP: You can pause and resume rolling with the "
+        f"{PAUSE_KEY.upper()} key[/]"
     )
 
     # Echo the chosen options and prompt continuation

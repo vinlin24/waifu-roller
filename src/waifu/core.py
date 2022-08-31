@@ -31,31 +31,47 @@ class _Pauser:
     paused = False
 
     @classmethod
-    def toggle(cls) -> None:
+    def toggle(cls, verbose: bool) -> None:
         """Toggle the internal flag."""
         cls.paused = not cls.paused
         if cls.paused:
             rich.print("[yellow]Program has been paused.[/]")
         else:
             rich.print("[yellow]Program resumed.[/]")
+            # 0.0.4: Move back to Discord if unfocused
+            if not _is_discord_active():
+                _open_discord(verbose)
+                _wait(0.1)
+
+
+def _is_discord_active() -> bool:
+    title: str | None = pyautogui.getActiveWindowTitle()
+    return (title is not None and
+            (title == "Discord" or title.endswith("- Discord")))
 
 
 def _wait(delay: float) -> None:
-    """Wait for at least delay seconds, and after paused flag is False.
+    """Wait for at least delay seconds and some conditions.
+
+    After waiting for delay seconds, wait for after the paused flag is
+    False and the Discord window is the active window.
 
     Args:
         delay (float): Minimum time in seconds to wait.
     """
     time.sleep(delay)
-    # Block until unpaused
-    while _Pauser.paused:
+    # 0.0.4: Notify if Discord window lost focus
+    if not _is_discord_active():
+        rich.print(
+            "[bright_black]Discord not in focus, program suspended...[/]"
+        )
+    # Block until unpaused and focused
+    while _Pauser.paused or not _is_discord_active():
         pass
 
 
 def _open_discord(verbose: bool) -> None:
     """Move to the Discord desktop application.
-
-    Interface function to be called from main process.
 
     Args:
         verbose (bool): Configuration preference.
@@ -222,7 +238,7 @@ def run_autogui(command: str,
         revert (bool): Configuration preference.
     """
     # Register PAUSE_KEY as a hotkey for pausing/resuming this function
-    keyboard.add_hotkey(PAUSE_KEY, _Pauser.toggle)
+    keyboard.add_hotkey(PAUSE_KEY, _Pauser.toggle, (verbose,))
 
     try:
         caller_win = pyautogui.getActiveWindow()
