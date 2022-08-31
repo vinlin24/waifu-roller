@@ -139,3 +139,10 @@ A :wrench: indicates that a change in implementation detail or workflow and does
 - (:wrench:) Fix [requirements.txt](requirements.txt) to not include the installed waifu-roller dist since it points to a path on my local machine.
 - (:wrench:) Now stores configuration file template as a YAML file instead of as a `str` constant.
 - (:wrench:) Enhance development tool [build.ps1](build/build.ps1) to improve handling of requirements.txt and verifying installation of the correct .whl build.
+
+![0.0.4](https://img.shields.io/badge/version-0.0.4-brightgreen)
+
+- Unpausing the program with CAPSLOCK now focuses the Discord window if it wasn't already active.
+- Unfocusing the Discord window while rolling now suspends rolling until it is the active window again.
+- After the program is loaded, it displays a tip for CAPSLOCK pausing in addition to ESC aborting now.
+- (:wrench:) Now using relative imports (I didn't understand packages).
