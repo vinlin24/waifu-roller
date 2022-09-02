@@ -48,12 +48,12 @@ waifu --config
 
 ### Command Reference
 
-| Argument             | Type           | Description                                                                                                                                                                                                                                                                                                        | Example      |
-| -------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
-| command              | positional     | Name of the Mudae command to use to roll for characters. It should be unprefixed (no $, /, etc.).                                                                                                                                                                                                                  | 'wa'         |
-| -c/--channel CHANNEL | option (1 arg) | Query string to submit to the Discord quick switcher to locate the channel to roll in. It should not contain whitespace. You should try entering this query yourself first with Ctrl+K to make sure it brings up the expected channel. The program has no way of knowing if the correct channel has entered focus. | 'waifu-spam' |
-| -n/--num NUM         | option (1 arg) | Number of times to roll in this session. Should be nonnegative. You can troll and put a massive number, but it's not our fault if you get banned for spam.                                                                                                                                                         | 10           |
-| -d/--daily           | option (flag)  | Flag specifying whether the daily Mudae commands, $daily and $dailykakera, should be run in addition to the rolling this session.                                                                                                                                                                                  |              |
+| Argument             | Type           | Description                                                                                                                                                                                                                                                                      | Example      |
+| -------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| command              | positional     | Name of the Mudae command to use to roll for characters. It should be unprefixed (no $, /, etc.).                                                                                                                                                                                | 'wa'         |
+| -c/--channel CHANNEL | option (1 arg) | Query string to submit to the Discord quick switcher to locate the channel to roll in. You should try entering this query yourself first with Ctrl+K to make sure it brings up the expected channel. The program has no way of knowing if the correct channel has entered focus. | 'waifu-spam' |
+| -n/--num NUM         | option (1 arg) | Number of times to roll in this session. Should be nonnegative. You can troll and put a massive number, but it's not our fault if you get banned for spam.                                                                                                                       | 10           |
+| -d/--daily           | option (flag)  | Flag specifying whether the daily Mudae commands, $daily and $dailykakera, should be run in addition to the rolling this session.                                                                                                                                                |              |
 
 > :hammer: Developer Todo: Update this reference every time a new command feature is added.
 
@@ -112,14 +112,14 @@ A tentative list of upcoming features (:bulb:) and implementation changes (:wren
 - [ ] :bulb: Make distribution and installation instructions more intuitive.
 - [ ] :bulb: Include update script in distribution. Remember to properly handle possibly existing `config.yaml`s.
 - [ ] :bulb: Stop exposing `ConfigError`s and `CommandError`s and define more graceful output.
-- [ ] :bulb: Allow whitespace in -c/--channel option for more flexible searches (necessary if user is in multiple servers with the same dedicated channel, like "waifu-spam".
+- [x] :bulb: Allow whitespace in -c/--channel option for more flexible searches (necessary if user is in multiple servers with the same dedicated channel, like "waifu-spam".
 - [ ] :wrench: Figure out a better alternative to the the ENTER listener when prompting confirmation since this leaves an awkward newline at script termination.
 - [ ] :wrench: Clean up the `parse_args` process and make better use of `argparse`'s error handling functionality, or migrate to other CLI libraries altogether.
 - [ ] :wrench: ~~Enhance [build.ps1](build/build.ps1) to clean up even upon error, such as removing the generated `*.egg-info` directories.~~ Also maybe make it report how long the build takes since they take quite a while lol.
 - [ ] :wrench: Maybe use environment variables instead of [meta.json](build/meta.json) to maintain version string since using [update.py](build/update.py) to modify 3 places at once seems like a massive code smell.
 - ~~:wrench: Maybe migrate from [PyYAML](https://pyyaml.org/) to [ruamel.yaml](https://pypi.org/project/ruamel.yaml/).~~
-- [ ] :wrench: Use [rich logging](https://rich.readthedocs.io/en/stable/logging.html) instead of `rich.print` to fix the pervasive `if verbose:` lines.
-- [ ] :wrench: Make and maintain a fresh virtual environment to test builds in so it's possible to spot dependency errors (and because this might be how users actually try them).
+- ~~:wrench: Use [rich logging](https://rich.readthedocs.io/en/stable/logging.html) instead of `rich.print` to fix the pervasive `if verbose:` lines.~~
+- [x] :wrench: Make and maintain a fresh virtual environment to test builds in so it's possible to spot dependency errors (and because this might be how users actually try them).
 
 ## Change Log
 
@@ -147,3 +147,7 @@ A :wrench: indicates a change in implementation detail or workflow and does not 
 - Unfocusing the Discord window while rolling now suspends rolling until it is the active window again.
 - After the program is loaded, it displays a tip for CAPSLOCK pausing in addition to ESC aborting now.
 - (:wrench:) Now using relative imports (I didn't understand packages).
+
+![0.0.5](https://img.shields.io/badge/version-0.0.5-brightgreen)
+
+- Whitespace is now allowed for the -c/--channel argument and default channel configuration. This is useful for distinguishing similarly named channels in different servers, like "bot-spam server1" and "bot-spam server2".

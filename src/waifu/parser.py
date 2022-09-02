@@ -51,15 +51,15 @@ def _validate_command(command: Any, is_default: bool) -> None:
 
 
 def _validate_channel(channel: Any, is_default: bool) -> None:
-    # Validate format: channel name shouldn't have spaces in it
-    if not isinstance(channel, str) or any(c.isspace() for c in channel):
+    # Changed 0.0.5: removed "no whitespace" constraint
+    # Validate format: channel name should be a string
+    if not isinstance(channel, str):
         raise ConfigFormatError(
             f"{channel!r} is a bad value for defaults option "
-            "'target-channel': should be a string and not contain any "
-            "whitespace (e.g. 'waifu-spam')"
+            "'target-channel': should be a string (e.g. 'waifu-spam')"
         ) if is_default else CommandError(
             f"{channel!r} is a bad value for argument 'CHANNEL': "
-            "should not contain any whitespace (e.g. 'waifu-spam')"
+            "should be a string (e.g. 'waifu-spam')"
         )
 
 
