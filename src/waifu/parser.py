@@ -130,21 +130,21 @@ class Parser(ArgumentParser):
             command_kwargs.update({
                 "nargs": "?",
                 "default": command
-            })  # type: ignore
+            })
 
         channel_kwargs = {"help": CHANNEL_HELP}
         if channel is not None:
             _validate_channel(channel, True)
             channel_kwargs.update({
-                "default": channel,
-            })  # type: ignore
+                "default": channel,  # type: ignore
+            })
 
         num_rolls_kwargs = {"type": int, "help": NUM_HELP}
         if num_rolls is not None:
             _validate_num_rolls(num_rolls, True)
             num_rolls_kwargs.update({
                 "default": num_rolls,
-            })  # type: ignore
+            })
 
         # Rolling arguments
         self.add_argument("command", **command_kwargs)
