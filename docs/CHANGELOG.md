@@ -26,3 +26,7 @@ A :wrench: indicates a change in implementation detail or workflow and does not 
 ![0.0.5](https://img.shields.io/badge/version-0.0.5-brightgreen)
 
 - Whitespace is now allowed for the -c/--channel argument and default channel configuration. This is useful for distinguishing similarly named channels in different servers, like "bot-spam server1" and "bot-spam server2".
+
+![0.0.6](https://img.shields.io/badge/version-0.0.6-brightgreen)
+
+- Add skip-confirmation [configuration option](REFERENCE.md#configuration-reference).
