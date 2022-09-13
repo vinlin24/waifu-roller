@@ -5,6 +5,8 @@ verbose: true
 revert-window: false
 # Moving your mouse to a corner of the screen terminates script
 keep-failsafe: true
+# Automatically start rolling, skipping confirmation text
+skip-confirmation: false
 
 # Values to use when command line arguments are omitted
 defaults:

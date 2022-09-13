@@ -47,6 +47,7 @@ def main() -> None:
     verbose: bool = config["verbose"]
     revert: bool = config["revert-window"]
     failsafe: bool = config["keep-failsafe"]
+    skip: bool = config["skip-confirmation"]
     defaults: dict = config["defaults"]
 
     # Set up graceful exits
@@ -73,27 +74,28 @@ def main() -> None:
     if version_flag or config_flag:
         raise SystemExit
 
-    # Display tips now that command is validated
-    rich.print(
-        "[bold yellow]TIP: You can abort the script at any time with the "
-        f"{ABORT_KEY.upper()} key[/]"
-    )
-    rich.print(
-        "[bold yellow]TIP: You can pause and resume rolling with the "
-        f"{PAUSE_KEY.upper()} key[/]"
-    )
+    if not skip:
+        # Display tips now that command is validated
+        rich.print(
+            "[bold yellow]TIP: You can abort the script at any time with the "
+            f"{ABORT_KEY.upper()} key[/]"
+        )
+        rich.print(
+            "[bold yellow]TIP: You can pause and resume rolling with the "
+            f"{PAUSE_KEY.upper()} key[/]"
+        )
 
-    # Echo the chosen options and prompt continuation
-    rich.print(
-        "[green]"
-        f"You have chosen to roll with the Mudae command '${command}' "
-        f"{num} times in the channel queried with {channel!r}, and have "
-        f"opted to {'' if daily else 'NOT '}run the daily commands as well."
-        "[/]"
-    )
-    rich.print("Hit ENTER to continue, or ^C to quit: ")
-    # Use instead of input() as workaround for funky abort key behavior
-    keyboard.wait("enter")
+        # Echo the chosen options and prompt continuation
+        rich.print(
+            "[green]"
+            f"You have chosen to roll with the Mudae command '${command}' "
+            f"{num} times in the channel queried with {channel!r}, and have "
+            f"opted to {'' if daily else 'NOT '}run the daily commands as "
+            "well.[/]"
+        )
+        rich.print("Hit ENTER to continue, or ^C to quit: ")
+        # Use instead of input() as workaround for funky abort key behavior
+        keyboard.wait("enter")
 
     # PyAutoGUI sequences
     run_autogui(command, channel, num, daily, verbose, revert)

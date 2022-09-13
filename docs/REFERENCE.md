@@ -24,20 +24,20 @@ This program uses the [keyboard](https://github.com/boppreh/keyboard) module to 
 | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ESC      | Abort script by sending SIGINT to the program. Also handy to use if the [revert-window](#configuration-reference) preference is set, which gives a short window of delay if you choose to stay on Discord to react to a roll, etc. |
 | CAPSLOCK | Pause/resume rolling. This is useful if you want to stop to claim a spawned character or kakera drop in the middle of a rolling session.                                                                                           |
-
 ## Configuration
 
 :mega: **Your configuration file is here: `~/.config/waifu-roller/config.yaml`**
 
 On first run, the script will try to initialize a configuration file for you at the above path. Default values and helpful comments are provided in the document, but you can refer to the reference below for detailed descriptions.
 
-### Configuration Reference
+## Configuration Reference
 
 | Field                   | Type    | Description                                                                                                                                                                                                  | Default      |
 | ----------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
 | verbose                 | boolean | Program verbosity level, and include config file path tip on --help and command error.                                                                                                                       | true         |
 | revert-window           | boolean | Whether to return to the window from which script was called after rolling is completed. Waits for a short delay first. In case you want to stay on Discord, ESC aborting and TAB pausing still have effect. | false        |
 | keep-failsafe           | boolean | Whether to keep PyAutoGUI's fail-safe mechanism, where moving your mouse to a corner of the screen terminates the program.                                                                                   | true         |  |
+| skip-confirmation       | boolean | Whether to skip the confirmation text after running the command.                                                                                                                                             | false        |
 | defaults                | mapping | Values to use when command line arguments are omitted.                                                                                                                                                       |              |
 | defaults.mudae-command  | string  | Default value for the command positional arg.                                                                                                                                                                | null (unset) |
 | defaults.target-channel | string  | Default value for the -c/--channel option.                                                                                                                                                                   | null (unset) |

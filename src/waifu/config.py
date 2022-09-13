@@ -20,6 +20,7 @@ CONFIG_FILE_SCHEMA: dict[str, type] = {
     "verbose": bool,
     "revert-window": bool,
     "keep-failsafe": bool,
+    "skip-confirmation": bool,
     "defaults": dict  # subkeys validated in parser.Parser
 }
 
