@@ -7,9 +7,6 @@ update.py
 Script to use the JSON metadata file to update appropriate files
 as part of a pre-push checklist.
 
-To be called from build/build.ps1, where the current working directory
-is asserted to be build/.
-
 Return an exit code of 0 on success, 1 otherwise (Exception).
 """
 
@@ -22,13 +19,29 @@ from typing import Any
 
 from ruamel.yaml import YAML
 
-# Relative paths from build/ to files
-# Learning note: next time, you can use the __file__ trick
-METADATA_JSON_PATH = Path("./meta.json")
-WORKFLOW_YAML_PATH = Path("../.github/workflows/main.yml")
-SETUP_CFG_PATH = Path("../src/setup.cfg")
-PACKAGE_INIT_PATH = Path("../src/waifu/__init__.py")
-REQUIREMENTS_TXT_PATH = Path("../requirements.txt")
+
+def AbsPath(relative: str) -> Path:
+    """Helper function for working with paths.
+
+    NOTE: I opted to use a function instead of subclassing Path because
+    the latter has tricky problems regarding inheritance.
+
+    Args:
+        relative (str): Relative path string. Paths should be relative
+        to this file (i.e. "." refers to this file's directory).
+
+    Returns:
+        Path: Absolute path instance.
+    """
+    return Path(__file__).parent / relative
+
+
+# Absolute paths
+METADATA_JSON_PATH = AbsPath("../meta.json")
+WORKFLOW_YAML_PATH = AbsPath("../.github/workflows/main.yml")
+SETUP_CFG_PATH = AbsPath("../src/setup.cfg")
+PACKAGE_INIT_PATH = AbsPath("../src/waifu/__init__.py")
+REQUIREMENTS_TXT_PATH = AbsPath("../requirements.txt")
 
 # From main.yml schema
 WORKFLOW_JOB_NAME = "update-badges"

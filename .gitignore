@@ -6,3 +6,4 @@ __pycache__/
 # Development
 temp/
 *.code-workspace
+*.log
