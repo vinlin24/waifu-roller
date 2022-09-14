@@ -37,12 +37,17 @@ function _get_version {
 }
 
 function _update_metadata {
+    # Update things containing the version string
     Write-Host "Updating project metadata..." -ForegroundColor Yellow
     python .\build\update.py
     if (!$?) {
         Write-Host "An error occurred in update.py, aborted." -ForegroundColor Red
         exit 1
     }
+
+    # Update requirements.txt
+    pip freeze | Out-File -Encoding utf8 .\requirements.txt
+    Write-Host "Updated requirements.txt with current state of .venv." -ForegroundColor Yellow
 }
 
 function _run_package {
@@ -53,6 +58,13 @@ function _run_package {
 }
 
 function _compile_src {
+    # Remind and ask for confirmation
+    Write-Host "About to build project source. Did you remember to update meta.json? (y/N) " -ForegroundColor Yellow
+    $confirmation = Read-Host
+    if ($confirmation -ne "y") {
+        Write-Host "Aborted." -ForegroundColor Red
+    }
+
     # Update metadata
     _update_metadata
 
@@ -68,6 +80,7 @@ function _compile_src {
         --distpath $distPath `
         --workpath $workPath `
         --specpath $specPath
+
     # Always attempt to remove --workpath stuff from pyinstaller
     try { Remove-Item -Recurse $workPath } catch {}
     # If some error occurred, remove --distpath and --specpath too
@@ -78,15 +91,19 @@ function _compile_src {
         exit 1
     }
 
+    # Rename the main executable
+    $generatedPath = "$distPath\$outputName"
+    Rename-Item "$generatedPath\$outputName.exe" "waifu.exe"
+
     # Compress to zip file
-    $targetPath = "$distPath\$outputName"
-    $destPath = "$targetPath.zip"
-    Compress-Archive -Path $targetPath `
+    $destPath = "$generatedPath.zip"
+    Compress-Archive -Path $generatedPath `
         -DestinationPath $destPath `
-        -CompressionLevel Optimal
+        -CompressionLevel Optimal `
+        -Update
 
     # Remove original directory
-    Remove-Item -Recurse $targetPath
+    Remove-Item -Recurse $generatedPath
 }
 
 function _run_task {
@@ -107,7 +124,7 @@ function _run_task {
 
 <# MAIN PROCESS HERE #>
 
-_run_task 3>&1 2>&1 > .\run.log
+_run_task
 
 Write-Host "Finished running run.ps1." -ForegroundColor Green
 exit 0
