@@ -65,11 +65,14 @@ See [REFERENCE.md](docs/REFERENCE.md).
 
 As of now, the builds have only been tested on my local PC, which is a Windows 11 64-bit system.
 
-If you want to simulate my virtual environment, you can use the provided [requirements.txt](requirements.txt) after installing the wheel file:
+If you want to simulate my virtual environment, you can use the provided [requirements.txt](requirements.txt) as you normally would:
 ```
+git clone https://github.com/vinlin24/waifu-roller.git
+cd waifu-roller
+python -m venv .venv
+.venv/Scripts/activate
 pip install -r requirements.txt
 ```
-
 
 See [TODO.md](docs/TODO.md).
 
