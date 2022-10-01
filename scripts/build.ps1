@@ -5,21 +5,16 @@ function Get-AbsPath {
         [string] $Path
     )
     if (Split-Path $Path -IsAbsolute) {
-        return Resolve-Path $Path
+        return $Path
     }
-    return Resolve-Path "$PSScriptRoot\$Path"
+    return "$PSScriptRoot\$Path"
 }
 
 <# Assert script conditions #>
 
-# Run from project root to not mess up relative paths
-if ((Get-Location).ToString() -ne $PSScriptRoot) {
-    Write-Host "Script must be run at script's directory, aborted." -ForegroundColor Red
-    exit 1
-}
-
 # Run in project's virtual environment to use its interpreter
-if ($env:VIRTUAL_ENV -ne (Resolve-Path "$PSScriptRoot\..\.venv")) {
+$venvPath = Resolve-Path (Get-AbsPath "..\.venv")
+if ($env:VIRTUAL_ENV -ne $venvPath) {
     Write-Host "Script must be run in the project's activated .venv, aborted." -ForegroundColor Red
     exit 1
 }
@@ -35,9 +30,12 @@ if ($confirmation -ne "y") {
 
 <# Build the whl file #>
 
+$distDir = Get-AbsPath "..\dist"
+$buildDir = Get-AbsPath "..\build"  # will be auto-deleted afterwards
+
 python setup.py bdist_wheel `
-    --dist-dir ..\dist `
-    --bdist-dir ..\build
+    --dist-dir $distDir `
+    --bdist-dir $buildDir
 
 if ($?) {
     Write-Host "Build succeeded. Remember to update any relevant documentation." -ForegroundColor Green
