@@ -22,16 +22,16 @@ def AbsPath(relative: str) -> Path:
     Returns:
         Path: Resolved absolute path instance.
     """
-    path = Path(relative).resolve()
+    path = (Path(__file__).parent / relative).resolve()
     # Raise this earlier than later
     if not path.exists():
         raise FileNotFoundError(path)
     return path
 
 
-# Absolute paths
-SETUP_CFG_PATH = AbsPath("./setup.cfg")
-PACKAGE_INIT_PATH = AbsPath("./src/waifu/__init__.py")
+# Absolute paths from relative paths from this file
+SETUP_CFG_PATH = AbsPath("../setup.cfg")
+PACKAGE_INIT_PATH = AbsPath("../src/waifu/__init__.py")
 
 
 def get_version() -> str:
