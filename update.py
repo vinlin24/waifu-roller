@@ -1,113 +1,66 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-update.py
-22 August 2022 16:42:28
+"""update.py
 
-Script to use the JSON metadata file to update appropriate files
-as part of a pre-push checklist.
-
-Return an exit code of 0 on success, 1 otherwise (Exception).
+Script to use the metadata.version value in setup.cfg to update
+appropriate files as part of a pre-build checklist.
 """
 
 import configparser
-import json
 import re
-import sys
 from pathlib import Path
-from typing import Any
-
-from ruamel.yaml import YAML
 
 
 def AbsPath(relative: str) -> Path:
     """Helper function for working with paths.
 
-    NOTE: I opted to use a function instead of subclassing Path because
-    the latter has tricky problems regarding inheritance.
-
     Args:
         relative (str): Relative path string. Paths should be relative
         to this file (i.e. "." refers to this file's directory).
 
+    Raises:
+        FileNotFoundError: The path does not exist.
+
     Returns:
-        Path: Absolute path instance.
+        Path: Resolved absolute path instance.
     """
-    return Path(__file__).parent / relative
+    path = Path(relative).resolve()
+    # Raise this earlier than later
+    if not path.exists():
+        raise FileNotFoundError(path)
+    return path
 
 
 # Absolute paths
-METADATA_JSON_PATH = AbsPath("../meta.json")
-WORKFLOW_YAML_PATH = AbsPath("../.github/workflows/main.yml")
-SETUP_CFG_PATH = AbsPath("../src/setup.cfg")
-PACKAGE_INIT_PATH = AbsPath("../src/waifu/__init__.py")
-REQUIREMENTS_TXT_PATH = AbsPath("../requirements.txt")
-
-# From main.yml schema
-WORKFLOW_JOB_NAME = "update-badges"
-WORKFLOW_STEP_NAME = "Dynamic Badges"
-
-JSONData = dict[str, Any]
+SETUP_CFG_PATH = AbsPath("./setup.cfg")
+PACKAGE_INIT_PATH = AbsPath("./src/waifu/__init__.py")
 
 
-def update_badge(meta: JSONData) -> None:
-    """Update the 'message' field in the GitHub workflow file."""
-    # Load YAML
-    yaml = YAML()  # round-trip handler
-    loaded = yaml.load(WORKFLOW_YAML_PATH)
-
-    # Find version field to update
-    steps = loaded["jobs"][WORKFLOW_JOB_NAME]["steps"]
-    for step in steps:
-        if step["name"] == WORKFLOW_STEP_NAME:
-            break
-    else:
-        raise ValueError(
-            "Could not find workflow job step name with "
-            f"{WORKFLOW_STEP_NAME=}"
-        )
-
-    # Update version field with new version string
-    new_version = meta["version"]
-    step["with"]["message"] = new_version
-
-    # Dump updated YAML
-    yaml.dump(loaded, WORKFLOW_YAML_PATH)
-
-    print(f"[update.py] INFO: Successfully updated {WORKFLOW_YAML_PATH}")
-
-
-def update_setup(meta: JSONData) -> None:
-    """Update the value of metadata.version in the setup.cfg file."""
+def get_version() -> str:
+    """Get the value of metadata.version in the setup.cfg file."""
     # Load cfg
     config = configparser.ConfigParser()
     config.read(SETUP_CFG_PATH)
-
-    # Update version field
-    new_version = meta["version"]
-    config["metadata"]["version"] = new_version
-
-    # Dump updated cfg (loses comments)
-    with open(SETUP_CFG_PATH, "wt") as fp:
-        config.write(fp, space_around_delimiters=True)
-
-    print(f"[update.py] INFO: Successfully updated {SETUP_CFG_PATH}")
+    version = config["metadata"]["version"]
+    print(
+        f"[update.py] Successfully extracted string {version!r} "
+        f"from {SETUP_CFG_PATH}."
+    )
+    return version
 
 
-def update_init(meta: JSONData) -> None:
+def update_init(version: str) -> None:
     """Update the value of __version__ in the source __init__.py."""
-    updated_line = f"__version__ = \"{meta['version']}\""
+    updated_line = f"__version__ = \"{version}\""
 
     # Match the line that __version__ is assigned on
     version_finder = re.compile(r"^__version__ ?= ?.*$", re.MULTILINE)
 
-    with open(PACKAGE_INIT_PATH, "rt+") as fp:
+    with PACKAGE_INIT_PATH.open("rt+", encoding="utf-8") as fp:
         content = fp.read()
         match = version_finder.search(content)
 
         # __version__ isn't assigned yet, append the line
         if match is None:
-            # changed 0.0.3: originally you would've overwritten at pos 0 :/
+            # Changed 0.0.3: originally you would've overwritten at pos 0 :/
             fp.seek(0, 2)  # this means 0 byte offset from end of file
             fp.write(updated_line)
         # Otherwise replace that line
@@ -121,39 +74,10 @@ def update_init(meta: JSONData) -> None:
     print(f"[update.py] INFO: Successfully updated {PACKAGE_INIT_PATH}")
 
 
-def update_requirements() -> None:
-    """Remove waifu-roller from requirements.txt, if exists."""
-    line_finder = re.compile(r"^waifu-roller.*$", re.MULTILINE)
-
-    with open(REQUIREMENTS_TXT_PATH, "rt+") as fp:
-        content = fp.read()
-        match = line_finder.search(content)
-        if match is not None:
-            start, end = match.start(), match.end()
-            # Need to strip a \n as side effect of multiline matching
-            updated = content[:start].removesuffix("\n") + content[end:]
-            fp.truncate(0)
-            fp.seek(0)
-            fp.write(updated)
-
-    print(f"[update.py] INFO: Successfully updated {REQUIREMENTS_TXT_PATH}")
-
-
 def main() -> None:
     """Main driver function."""
-    # Load JSON metadata
-    with open(METADATA_JSON_PATH, "rt") as fp:
-        meta = json.load(fp)
-
-    # Run updaters
-    print("[update.py] INFO: Running updaters...")
-    update_badge(meta)
-    update_setup(meta)
-    update_init(meta)
-    update_requirements()
-
-    # Let PS know everything went well
-    sys.exit(0)
+    version = get_version()
+    update_init(version)
 
 
 if __name__ == "__main__":
