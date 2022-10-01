@@ -21,12 +21,11 @@ if ($confirmation -ne "y") {
     exit 1
 }
 
-<# Run build command #>
+<# Build the whl file #>
 
-# Build a whl file and then install globally for myself
-python setup.py `
-    bdist_wheel --dist-dir .\dist `
-    install --user
+python setup.py bdist_wheel `
+    --dist-dir .\dist `
+    --bdist-dir .\build
 
 if ($?) {
     Write-Host "Build succeeded. Remember to update any relevant documentation." -ForegroundColor Green

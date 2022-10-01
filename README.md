@@ -72,6 +72,7 @@ git clone "https://github.com/vinlin24/waifu-roller.git"
 cd waifu-roller
 python -m venv .venv
 .venv\Scripts\Activate.ps1
+pip install -r requirements_dev.txt
 pip install -e .
 ```
 
@@ -83,6 +84,7 @@ git clone "https://github.com/vinlin24/waifu-roller.git"
 cd waifu-roller
 python3 -m venv .venv
 source .venv/bin/activate
+pip3 install -r requirements_dev.txt
 pip3 install -e .
 ```
 
