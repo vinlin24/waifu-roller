@@ -37,4 +37,5 @@
 
 ![0.1.0](https://img.shields.io/badge/version-0.1.0-brightgreen)
 
-- Revamp development environment by properly configuring the setup files.
+- Revamp development environment by properly configuring the setup files and writing a few independent [scripts](../scripts/).
+- Make the package read the configuration file template from a Python module instead of a YAML file because it wasn't getting packaged with setup.py. This is also before I found out about [packaging data files](https://setuptools.pypa.io/en/latest/userguide/datafiles.html).
