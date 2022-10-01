@@ -61,15 +61,15 @@ If you want to simulate my development environment:
 
 <table>
 <tr>
-    <th>Windows</th>
-    <th>POSIX</th>
+    <th>Windows PowerShell</th>
+    <th>POSIX SH</th>
 </tr>
 <tr>
 <td>
 
-```console
+```powershell
 git clone "https://github.com/vinlin24/waifu-roller.git"
-cd waifu-roller
+cd "waifu-roller"
 python -m venv .venv
 .venv\Scripts\Activate.ps1
 pip install -r requirements_dev.txt
@@ -81,7 +81,7 @@ pip install -e .
 
 ```console
 git clone "https://github.com/vinlin24/waifu-roller.git"
-cd waifu-roller
+cd "waifu-roller"
 python3 -m venv .venv
 source .venv/bin/activate
 pip3 install -r requirements_dev.txt
@@ -94,12 +94,57 @@ pip3 install -e .
 
 To update the semantic version, edit the `metadata.version` value in [setup.cfg](setup.cfg). Then run:
 
-```console
-python sync_version.py
+<table>
+<tr>
+    <th>Windows PowerShell</th>
+    <th>POSIX SH</th>
+</tr>
+<tr>
+<td>
+
+```powershell
+python scripts/sync_version.py
 ```
+
+</td>
+<td>
+
+```console
+python3 scripts/sync_version.py
+```
+
+</td>
+</tr>
+</table>
 
 This will sync the version string to relevant parts of the project, like `__version__` in [`__init__.py`](src/waifu/__init__.py).
 
+To build the project source into a distributable wheel file:
+
+<table>
+<tr>
+    <th>Windows PowerShell</th>
+    <th>POSIX SH</th>
+</tr>
+<tr>
+<td>
+
+```powershell
+scripts\build.ps1
+```
+
+</td>
+<td>
+
+```console
+powershell.exe -NoProfile -File scripts/build.ps1
+```
+
+</td>
+</tr>
+</table>
+
+Fair disclaimer: I have not tested using PowerShell on non-Windows platforms. Frankly, I've been writing blindly for anything not Windows-related.
 
 ## Change Log
 

@@ -1,3 +1,15 @@
+
+function Get-AbsPath {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string] $Path
+    )
+    if (Split-Path $Path -IsAbsolute) {
+        return Resolve-Path $Path
+    }
+    return Resolve-Path "$PSScriptRoot\$Path"
+}
+
 <# Assert script conditions #>
 
 # Run from project root to not mess up relative paths
@@ -12,7 +24,7 @@ if ($env:VIRTUAL_ENV -ne (Resolve-Path "$PSScriptRoot\..\.venv")) {
     exit 1
 }
 
-<# Reminder and confirmation#>
+<# Reminder and confirmation #>
 
 Write-Host "About to build project source. Did you remember to version bump? (y/N) " -NoNewline -ForegroundColor Yellow
 $confirmation = Read-Host
