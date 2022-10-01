@@ -17,17 +17,9 @@ waifu wa -c waifu-spam -n 10 -d
 
 ## Installation
 
-### From Zip File (Windows)
-
-**:information_source: Only supports v0.0.6 onwards.**
-
-Download the desired zip file `waifu_roller-x.y.z.zip` from the [`exes`](dist/exes/) folder and extract it. At the moment, I have not finished implementing the installation process that adds the executable to PATH, so with this method, you will need to provide the full path to the `waifu.exe` within to use the CLI.
-
 ### With Python 3.10+
 
-**:information_source: Only supports up to v0.0.6.**
-
-Download the desired wheel file `waifu_roller-x.y.z-py3-none-any.whl` from the [`whls`](dist/whls/) folder and install it with pip:
+Download the desired wheel file `waifu_roller-x.y.z-py3-none-any.whl` from the [`whls`](dist/whls/) folder or the [Releases](https://github.com/vinlin24/waifu-roller/releases) section and install it with pip:
 ```
 pip install path/to/waifu_roller-x.y.z-py3-none-any.whl
 ```
