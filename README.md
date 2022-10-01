@@ -1,5 +1,4 @@
 <!-- https://github.com/marketplace/actions/dynamic-badges -->
-![Build Version](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/vinlin24/b4b5eb0dba19ef0cadea7eb95bd0d252/raw/badge.json)
 ![Python Version](https://img.shields.io/badge/python-3.10%2B-blue)
 
 # Coder's Waifu Roller
@@ -19,7 +18,7 @@ waifu wa -c waifu-spam -n 10 -d
 
 ### With Python 3.10+
 
-Download the desired wheel file `waifu_roller-x.y.z-py3-none-any.whl` from the [`whls`](dist/whls/) folder or the [Releases](https://github.com/vinlin24/waifu-roller/releases) section and install it with pip:
+Download the desired wheel file `waifu_roller-x.y.z-py3-none-any.whl` from the [`dist`](dist) folder or the [Releases](https://github.com/vinlin24/waifu-roller/releases) section and install it with pip:
 ```
 pip install path/to/waifu_roller-x.y.z-py3-none-any.whl
 ```
@@ -62,7 +61,7 @@ If you want to simulate my development environment:
 <table>
 <tr>
     <th>Windows PowerShell</th>
-    <th>POSIX SH</th>
+    <th>Unix SH</th>
 </tr>
 <tr>
 <td>
@@ -84,8 +83,8 @@ git clone "https://github.com/vinlin24/waifu-roller.git"
 cd "waifu-roller"
 python3 -m venv .venv
 source .venv/bin/activate
-pip3 install -r requirements_dev.txt
-pip3 install -e .
+pip install -r requirements_dev.txt
+pip install -e .
 ```
 
 </td>
@@ -94,57 +93,26 @@ pip3 install -e .
 
 To update the semantic version, edit the `metadata.version` value in [setup.cfg](setup.cfg). Then run:
 
-<table>
-<tr>
-    <th>Windows PowerShell</th>
-    <th>POSIX SH</th>
-</tr>
-<tr>
-<td>
-
-```powershell
-python scripts/sync_version.py
-```
-
-</td>
-<td>
 
 ```console
-python3 scripts/sync_version.py
+python scripts/sync_version.py
 ```
-
-</td>
-</tr>
-</table>
 
 This will sync the version string to relevant parts of the project, like `__version__` in [`__init__.py`](src/waifu/__init__.py).
 
 To build the project source into a distributable wheel file:
 
-<table>
-<tr>
-    <th>Windows PowerShell</th>
-    <th>POSIX SH</th>
-</tr>
-<tr>
-<td>
-
-```powershell
-scripts\build.ps1
-```
-
-</td>
-<td>
-
 ```console
 powershell.exe -NoProfile -File scripts/build.ps1
 ```
 
-</td>
-</tr>
-</table>
+To install a fresh version of the latest distribution in your global `site-packages`, you can run:
 
-Fair disclaimer: I have not tested using PowerShell on non-Windows platforms. Frankly, I've been writing blindly for anything not Windows-related.
+```console
+python scripts/install.py
+```
+
+This will take the last whl file in [`dist`](dist) and install it using the interpreter in your global environment. It also wipes your `config.yaml` file, if exists. This can help better simulate a completely fresh start as opposed to working with the version installed in the virtual environment with `pip install -e .`.
 
 ## Change Log
 
