@@ -5,13 +5,13 @@ config.py
 Handle configuration setup.
 """
 
-import os
 from pathlib import Path
 from typing import Any
 
 import rich
 import yaml
 
+from .config_template import CONFIG_TEMPLATE
 from .exceptions import (ConfigFileError, ConfigFormatError,
                          get_user_config_path)
 
@@ -41,16 +41,9 @@ def _set_up_config_file() -> Path:
         except FileExistsError:
             pass
 
-        # 0.0.3: Use an actual YAML file for the template instead of str
-        # __file__ trick to get paths relative to module
-        template_path = os.path.join(
-            os.path.dirname(__file__),
-            "config_template.yaml"
-        )
-        with open(template_path, "rt") as fp:
-            template = fp.read()
-        with open(config_path, "wt") as fp:
-            fp.write(template)
+        # 0.1.0: Must use Python module instead of data files like YAML
+        with open(config_path, "wt", encoding="utf-8") as fp:
+            fp.write(CONFIG_TEMPLATE)
 
         rich.print(
             "[green]We noticed you didn't have a configuration file set up "

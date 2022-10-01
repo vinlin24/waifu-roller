@@ -1,3 +1,11 @@
+"""config_template.py
+
+Store the content of a default config.yaml file as a string constant.
+This is necessary because setuptools does not permit installing data
+files to arbitrary locations on a user's machine.
+"""
+
+CONFIG_TEMPLATE = """\
 ---
 # Program verbosity setting
 verbose: true
@@ -16,3 +24,4 @@ defaults:
   target-channel:
   # Number of times to send the command
   num-rolls:
+"""
