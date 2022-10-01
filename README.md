@@ -4,9 +4,9 @@
 
 # Coder's Waifu Roller
 
-## Description
-
 **Command line tool for rolling anime/game characters with the Discord bot [Mudae](https://top.gg/bot/432610292342587392).**
+
+## Description
 
 Suppose you're in the zone coding, but it's a new hour and you can roll for waifus again. Before you'd switch to Discord, find the channel, and brainlessly spam enter `$wa` or something. Now you can start the whole rolling sequence right from the command line:
 ```
@@ -90,7 +90,15 @@ pip3 install -e .
 </tr>
 </table>
 
+To update the semantic version, edit the `metadata.version` value in [setup.cfg](setup.cfg). Then run:
 
-See [TODO.md](docs/TODO.md).
+```console
+python sync_version.py
+```
+
+This will sync the version string to relevant parts of the project, like `__version__` in [`__init__.py`](src/waifu/__init__.py).
+
+
+## Change Log
 
 See [CHANGELOG.md](docs/CHANGELOG.md).

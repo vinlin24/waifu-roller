@@ -1,4 +1,4 @@
-"""update.py
+"""sync_version.py
 
 Script to use the metadata.version value in setup.cfg to update
 appropriate files as part of a pre-build checklist.

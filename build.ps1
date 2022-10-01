@@ -14,7 +14,7 @@ if ($env:VIRTUAL_ENV -ne "$PSScriptRoot\.venv") {
 
 <# Reminder and confirmation#>
 
-Write-Host "About to build project source. Did you remember to update metadata and documentation? (y/N) " -ForegroundColor Yellow
+Write-Host "About to build project source. Did you remember to version bump? (y/N) " -NoNewline -ForegroundColor Yellow
 $confirmation = Read-Host
 if ($confirmation -ne "y") {
     Write-Host "Aborted." -ForegroundColor Red
@@ -28,4 +28,10 @@ python setup.py `
     bdist_wheel --dist-dir .\dist `
     install --user
 
-exit $LASTEXITCODE
+if ($?) {
+    Write-Host "Build succeeded. Remember to update any relevant documentation." -ForegroundColor Green
+}
+else {
+    Write-Host "Build failed." -ForegroundColor Red
+    exit $LASTEXITCODE
+}
