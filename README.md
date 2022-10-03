@@ -49,19 +49,13 @@ waifu --config
 
 Here's an example of using the command-line arguments. As a bonus, I got to showcase the [CAPSLOCK pausing feature](docs/REFERENCE.md#hotkeys) that allowed me to claim that kakera:
 
-<video width="600" controls>
-    <source src="demos/waifu-roller-args-demo.mp4" type="video/mp4">
-    Your browser does not support the video tag. You can find the raw video file <a href="demos/waifu-roller-args-demo.mp4.">here</a>.
-</video>
+https://user-images.githubusercontent.com/67369899/193502664-89897aa1-dd0f-4a5d-b9e3-baea816051b0.mp4
 
 Here's an example of updating the config YAML file and running with default values:
 
-<video width="600" controls>
-    <source src="demos/waifu-roller-config-demo.mp4" type="video/mp4">
-    Your browser does not support the video tag. You can find the raw video file <a href="demos/waifu-roller-config-demo.mp4.">here</a>.
-</video>
+https://user-images.githubusercontent.com/67369899/193502734-21c00fa2-1c82-4145-bd83-8e298e324857.mp4
 
-Notice that in both videos I was not manually entering $wa to the text box. The key-sending is entirely automated.
+Notice that in both videos I was not manually entering $wa to the text box. The key-sending is entirely automated, including switching to the Discord app and typing into the Quick Switcher.
 
 ## References and Configuration
 
