@@ -52,7 +52,7 @@ waifu --config
 
 See [REFERENCE.md](docs/REFERENCE.md).
 
-> :warning: For some reason, after entering the channel name to the Quick Switcher tool, the [Learn more](https://support.discord.com/hc/en-us/articles/115000070311) link enters focus and causes the program to open the link instead of roll like expected. I'm not sure what causes this, but in my experience, setting the [`skip-confirmation`](docs/REFERENCE.md#configuration-reference) option to `true` has consistently prevented this.
+> :warning: For some reason, sometimes after entering the channel name to the Quick Switcher tool, the [Learn more](https://support.discord.com/hc/en-us/articles/115000070311) link enters focus and causes the program to open the link instead of roll like expected. I'm not sure what causes this, but in my experience, setting the [`skip-confirmation`](docs/REFERENCE.md#configuration-reference) option to `true` has consistently prevented this.
 
 ## Development
 
@@ -93,8 +93,7 @@ pip install -e .
 </tr>
 </table>
 
-To update the semantic version, edit the `metadata.version` value in [setup.cfg](setup.cfg). Then run:
-
+To update the semantic version, edit the `metadata.version` value in [setup.cfg](setup.cfg#L3). Then run:
 
 ```console
 python scripts/sync_version.py
