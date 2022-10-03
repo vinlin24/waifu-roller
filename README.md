@@ -7,10 +7,7 @@
 
 ## Description
 
-Suppose you're in the zone coding, but it's a new hour and you can roll for waifus again. Before you'd switch to Discord, find the channel, and brainlessly spam enter `$wa` or something. Now you can start the whole rolling sequence right from the command line:
-```
-waifu wa -c waifu-spam -n 10 -d
-```
+Suppose you're in the zone coding, but it's a new hour and you can roll for waifus again. Before you'd switch to Discord, find the channel, and brainlessly spam enter `$wa` or something. Now you can start the whole rolling sequence [right from the command line](#demos).
 
 :mega: **No asking for user tokens, no Discord self-botting, no automatic claiming or sniping.** This project uses [PyAutoGUI](https://pypi.org/project/PyAutoGUI/) to automate the process of switching to the app, navigating to the channel, and entering commands. This silly script is intended to just free up your hands a little while you watch the rolls go by.
 
@@ -47,6 +44,24 @@ As usual, use the help flag for a full list of arguments, or use the config flag
 waifu --help
 waifu --config
 ```
+
+## Demos
+
+Here's an example of using the command-line arguments. As a bonus, I got to showcase the [CAPSLOCK pausing feature](docs/REFERENCE.md#hotkeys) that allowed me to claim that kakera:
+
+<video width="600" controls>
+    <source src="demos/waifu-roller-args-demo.mp4" type="video/mp4">
+    Your browser does not support the video tag. You can find the raw video file <a href="demos/waifu-roller-args-demo.mp4.">here</a>.
+</video>
+
+Here's an example of updating the config YAML file and running with default values:
+
+<video width="600" controls>
+    <source src="demos/waifu-roller-config-demo.mp4" type="video/mp4">
+    Your browser does not support the video tag. You can find the raw video file <a href="demos/waifu-roller-config-demo.mp4.">here</a>.
+</video>
+
+Notice that in both videos I was not manually entering $wa to the text box. The key-sending is entirely automated.
 
 ## References and Configuration
 
