@@ -1,4 +1,4 @@
-## Command Reference
+# Command Reference
 
 | Argument             | Type           | Description                                                                                                                                                                                                                                                                      | Example      |
 | -------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
@@ -42,3 +42,5 @@ On first run, the script will try to initialize a configuration file for you at 
 | defaults.mudae-command  | string  | Default value for the command positional arg.                                                                                                                                                                | null (unset) |
 | defaults.target-channel | string  | Default value for the -c/--channel option.                                                                                                                                                                   | null (unset) |
 | defaults.num-rolls      | int     | Default value for the -n/--num option.                                                                                                                                                                       | null (unset) |
+
+> :warning: For some reason, after entering the channel name to the Quick Switcher tool, the [Learn more](https://support.discord.com/hc/en-us/articles/115000070311) link enters focus and causes the program to open the link instead of roll like expected. I'm not sure what causes this, but in my experience, setting the [`skip-confirmation`](docs/REFERENCE.md#configuration-reference) option to `true` has consistently prevented this.
