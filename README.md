@@ -5,6 +5,10 @@
 
 **Command line tool for rolling anime/game characters with the Discord bot [Mudae](https://top.gg/bot/432610292342587392).**
 
+> :warning: **This codebase has been deprecated. I found a much better way to do
+> the same thing using [AutoHotKey (AHK)](https://www.autohotkey.com/)**. The
+> script is shared at [scripts/mudae.ahk](scripts/mudae.ahk).
+
 ## Description
 
 Suppose you're in the zone coding, but it's a new hour and you can roll for waifus again. Before you'd switch to Discord, find the channel, and brainlessly spam enter `$wa` or something. Now you can start the whole rolling sequence [right from the command line](#demos).
@@ -68,4 +72,3 @@ If you would like to contribute, please see [DEVELOPMENT.md](docs/DEVELOPMENT.md
 ## Change Log
 
 See [CHANGELOG.md](docs/CHANGELOG.md).
-
