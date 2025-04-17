@@ -20,31 +20,38 @@ Suppose you're in the zone coding, but it's a new hour and you can roll for waif
 ### With Python 3.10+
 
 Download the desired wheel file `waifu_roller-x.y.z-py3-none-any.whl` from the [`dist`](dist) folder or the [Releases](https://github.com/vinlin24/waifu-roller/releases) section and install it with pip:
-```
+
+```sh
 pip install path/to/waifu_roller-x.y.z-py3-none-any.whl
 ```
+
 You can verify that it's installed by running:
-```
+
+```sh
 pip show waifu-roller
 ```
 
 ## Usage
 
 The CLI command is `waifu`:
-```
+
+```sh
 waifu wa -c waifu-spam -n 10 -d
 ```
-This example rolls the Mudae command $wa 10 times in the channel named waifu-spam. The optional -d flag appends the daily commands $dk and $daily after the rolling session.
+
+This example rolls the Mudae command `$wa` 10 times in the channel named `waifu-spam`. The optional `-d` flag appends the daily commands `$dk` and `$daily` after the rolling session.
 
 You can also omit arguments and opt to use the default values set in the [config.yaml](docs/REFERENCE.md#configuration) file. This could be useful if you roll most commonly in a specific channel on a specific server:
-```
+
+```sh
 waifu
 ```
 
-This program supports [hotkeys](docs/REFERENCE.md#hotkeys) to assist your *competitive waifu snatching*. You can pause and resume rolling with CAPSLOCK to claim a character/kakera/whatnot, or abort altogether with ESC.
+This program supports [hotkeys](docs/REFERENCE.md#hotkeys) to assist your *competitive waifu snatching*. You can pause and resume rolling with <kbd>Caps Lock</kbd> to claim a character/kakera/whatnot, or abort altogether with <kbd>Esc</kbd>.
 
 As usual, use the help flag for a full list of arguments, or use the config flag to get the full path to your [configuration file](docs/REFERENCE.md#configuration):
-```
+
+```sh
 waifu --help
 waifu --config
 ```
