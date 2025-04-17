@@ -11,7 +11,7 @@
 
 ## Description
 
-Suppose you're in the zone coding, but it's a new hour and you can roll for waifus again. Before you'd switch to Discord, find the channel, and brainlessly spam enter `$wa` or something. Now you can start the whole rolling sequence [right from the command line](#demos).
+Suppose you're in the zone coding, but it's a new hour and you can roll for waifus again. Before you'd switch to Discord, find the channel, and brainlessly spam enter `$wa` or something. Now you can start the whole rolling sequence right from the command line.
 
 :mega: **No asking for user tokens, no Discord self-botting, no automatic claiming or sniping.** This project uses [PyAutoGUI](https://pypi.org/project/PyAutoGUI/) to automate the process of switching to the app, navigating to the channel, and entering commands. This silly script is intended to just free up your hands a little while you watch the rolls go by.
 
@@ -48,18 +48,6 @@ As usual, use the help flag for a full list of arguments, or use the config flag
 waifu --help
 waifu --config
 ```
-
-## Demos
-
-Here's an example of using the command-line arguments. As a bonus, I got to showcase the [CAPSLOCK pausing feature](docs/REFERENCE.md#hotkeys) that allowed me to claim that kakera:
-
-https://user-images.githubusercontent.com/67369899/193502664-89897aa1-dd0f-4a5d-b9e3-baea816051b0.mp4
-
-Here's an example of updating the config YAML file and running with default values:
-
-https://user-images.githubusercontent.com/67369899/193502734-21c00fa2-1c82-4145-bd83-8e298e324857.mp4
-
-Notice that in both videos I was not manually entering $wa to the text box. The key-sending is entirely automated, including switching to the Discord app and typing into the Quick Switcher.
 
 ## References and Configuration
 
